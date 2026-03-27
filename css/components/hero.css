@@ -1,0 +1,177 @@
+/* ============================================================
+   hero.css — Homepage two-column layout, brand intro, hero image
+   Depends on: css/base.css
+   ============================================================ */
+
+/* ---- Outer home grid ---- */
+.home-grid {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  align-items: start;
+  gap: 0;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding: var(--space-xl) var(--space-lg) 0;
+}
+
+/* ---- Left column: brand intro + featured section ---- */
+.home-grid__left {
+  padding-right: var(--space-xl);
+  border-right: 1px solid var(--color-border-soft);
+  padding-bottom: var(--space-2xl);
+}
+
+/* ---- Right column: hero image + explore section ---- */
+.home-grid__right {
+  padding-left: var(--space-xl);
+  padding-bottom: var(--space-2xl);
+}
+
+/* ============================================================
+   Brand intro
+   ============================================================ */
+.brand-intro {
+  padding-bottom: var(--space-2xl);
+}
+
+.location-tag {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: var(--space-md);
+}
+
+.location-tag::before {
+  content: '— ';
+  color: var(--color-accent);
+}
+
+.hero-headline {
+  font-size: clamp(var(--font-size-3xl), 4vw, var(--font-size-5xl));
+  font-weight: var(--font-weight-black);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+}
+
+.hero-description {
+  font-size: var(--font-size-base);
+  color: var(--color-muted);
+  line-height: var(--line-height-base);
+  max-width: 36ch;
+}
+
+/* ============================================================
+   Featured section (left column)
+   ============================================================ */
+.featured-section {
+  /* inherits from parent column */
+}
+
+.section-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--space-sm);
+}
+
+.section-heading {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+/* ============================================================
+   Hero image (right column top)
+   ============================================================ */
+.hero-image-wrapper {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-surface);
+  margin-bottom: var(--space-xl);
+}
+
+.hero-image-wrapper .img-placeholder {
+  aspect-ratio: 4 / 3;
+}
+
+/* ============================================================
+   Explore section (right column bottom)
+   ============================================================ */
+.explore-section .section-heading {
+  margin-bottom: var(--space-lg);
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1024px) {
+  .explore-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+    padding: var(--space-lg) var(--space-md) 0;
+    gap: 0;
+  }
+
+  .home-grid__left {
+    padding-right: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border-soft);
+    padding-bottom: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  .home-grid__right {
+    padding-left: 0;
+  }
+
+  .brand-intro {
+    padding-bottom: var(--space-xl);
+  }
+
+  .hero-headline {
+    font-size: var(--font-size-3xl);
+  }
+
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .explore-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .explore-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+  }
+}

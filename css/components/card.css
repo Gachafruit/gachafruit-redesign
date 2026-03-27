@@ -1,0 +1,159 @@
+/* ============================================================
+   card.css — Product card, badge, and button components
+   Depends on: css/base.css
+   ============================================================ */
+
+/* ============================================================
+   Product card — used in featured (large) and explore (small)
+   ============================================================ */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 20px rgba(44, 39, 36, 0.07);
+  transform: translateY(-2px);
+}
+
+/* ---- Image area ---- */
+.product-card__img {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.product-card__img .img-placeholder {
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-surface);
+}
+
+/* ---- Body ---- */
+.product-card__body {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.product-card__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: var(--line-height-snug);
+  letter-spacing: -0.01em;
+}
+
+/* ---- Meta row: price + badge ---- */
+.product-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.product-card__price {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+/* ---- Badge ---- */
+.badge {
+  display: inline-block;
+  padding: 2px var(--space-sm);
+  border-radius: 99px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+.badge--shipping {
+  background-color: var(--color-badge-bg);
+  color: var(--color-badge-text);
+}
+
+/* ---- CTA button — grows to fill remaining space ---- */
+.product-card__cta {
+  margin-top: auto;
+  padding-top: var(--space-xs);
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn--outline {
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-text);
+}
+
+.btn--outline:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background-color: var(--color-accent-soft);
+}
+
+.btn--primary {
+  border: 1px solid var(--color-accent);
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+/* ============================================================
+   Small card variant — used in explore grid
+   ============================================================ */
+.product-card--sm .product-card__body {
+  padding: var(--space-sm) var(--space-sm) var(--space-md);
+  gap: var(--space-xs);
+}
+
+.product-card--sm .product-card__title {
+  font-size: var(--font-size-xs);
+}
+
+.product-card--sm .product-card__price {
+  font-size: var(--font-size-sm);
+}
+
+.product-card--sm .badge {
+  font-size: 0.65rem;
+  padding: 1px var(--space-xs);
+}
+
+.product-card--sm .btn {
+  font-size: 0.65rem;
+  padding: var(--space-xs) var(--space-sm);
+}
