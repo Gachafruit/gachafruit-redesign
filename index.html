@@ -22,16 +22,13 @@
        Header
        ====================================================== -->
   <header class="site-header">
-    <div class="header-inner">
-      <a href="/" class="logo" aria-label="Gachafruit home">Gachafruit</a>
 
-      <nav class="nav" aria-label="Main navigation">
-        <ul class="nav-list">
-          <li><a href="#originals"   class="nav-link">Originals</a></li>
-          <li><a href="#studio"      class="nav-link">The Studio</a></li>
-          <li><a href="#accessories" class="nav-link">Accessories</a></li>
-        </ul>
-      </nav>
+    <!-- Row 1: logo (centered) + hamburger (mobile only) -->
+    <div class="header-logo-row">
+      <a href="/" class="logo" aria-label="Gachafruit home">
+        <span class="logo__name">Gachafruit</span>
+        <span class="logo__sub">Studio</span>
+      </a>
 
       <button class="hamburger"
               aria-label="Toggle menu"
@@ -43,6 +40,16 @@
       </button>
     </div>
 
+    <!-- Row 2: desktop nav (centered, below logo) -->
+    <nav class="header-nav" aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="#originals"   class="nav-link">Originals</a></li>
+        <li><a href="#studio"      class="nav-link">The Studio</a></li>
+        <li><a href="#accessories" class="nav-link">Accessories</a></li>
+      </ul>
+    </nav>
+
+    <!-- Mobile nav drawer -->
     <nav class="mobile-nav" id="mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
       <ul class="mobile-nav-list">
         <li><a href="#originals"   class="nav-link">Originals</a></li>
@@ -50,6 +57,7 @@
         <li><a href="#accessories" class="nav-link">Accessories</a></li>
       </ul>
     </nav>
+
   </header>
 
   <!-- ======================================================

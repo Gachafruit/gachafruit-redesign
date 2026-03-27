@@ -1,5 +1,6 @@
 /* ============================================================
    header.css — Site header and navigation
+   Two-row layout: logo centered on top, nav centered below.
    Depends on: css/base.css
    ============================================================ */
 
@@ -12,49 +13,77 @@
   border-bottom: 1px solid var(--color-border-soft);
 }
 
-/* ---- Inner row ---- */
-.header-inner {
+/* ============================================================
+   Row 1 — Logo
+   ============================================================ */
+.header-logo-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--header-height);
   max-width: var(--max-width);
   margin-inline: auto;
   padding-inline: var(--space-lg);
-  height: var(--header-height);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 /* ---- Logo ---- */
 .logo {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-accent);
-  letter-spacing: -0.03em;
-  transition: color var(--transition-fast);
-  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: opacity var(--transition-fast);
 }
 
 .logo:hover {
-  color: var(--color-accent-hover);
+  opacity: 0.75;
 }
 
-/* ---- Desktop nav ---- */
+.logo__name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-black);
+  color: var(--color-accent);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.logo__sub {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* ============================================================
+   Row 2 — Desktop navigation
+   ============================================================ */
+.header-nav {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--color-border-soft);
+  padding-block: 10px;
+}
+
 .nav-list {
   display: flex;
   align-items: center;
-  gap: var(--space-xl);
+  gap: var(--space-3xl);
 }
 
 .nav-link {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-muted);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   position: relative;
   transition: color var(--transition-fast);
 }
 
-/* Underline-on-hover effect */
+/* Underline-on-hover */
 .nav-link::after {
   content: '';
   position: absolute;
@@ -74,14 +103,20 @@
   width: 100%;
 }
 
-/* ---- Hamburger button (mobile only) ---- */
+/* ============================================================
+   Hamburger (mobile only — positioned to right of logo row)
+   ============================================================ */
 .hamburger {
   display: none;
+  position: absolute;
+  right: var(--space-lg);
+  top: 50%;
+  transform: translateY(-50%);
   flex-direction: column;
   justify-content: center;
   gap: 5px;
   width: 28px;
-  height: var(--header-height);
+  height: 44px;
   padding: 0;
   color: var(--color-text);
 }
@@ -96,7 +131,7 @@
   transform-origin: center;
 }
 
-/* Animate bars to X when open */
+/* Bars animate to X when open */
 .hamburger[aria-expanded="true"] span:nth-child(1) {
   transform: translateY(6.5px) rotate(45deg);
 }
@@ -108,7 +143,9 @@
   transform: translateY(-6.5px) rotate(-45deg);
 }
 
-/* ---- Mobile nav drawer ---- */
+/* ============================================================
+   Mobile nav drawer
+   ============================================================ */
 .mobile-nav {
   max-height: 0;
   overflow: hidden;
@@ -135,6 +172,7 @@
   display: block;
   padding-block: var(--space-sm);
   font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
   text-transform: none;
   letter-spacing: 0;
   color: var(--color-text);
@@ -148,12 +186,16 @@
   color: var(--color-accent);
 }
 
-/* ---- Responsive breakpoint ---- */
+/* ============================================================
+   Responsive breakpoint
+   ============================================================ */
 @media (max-width: 768px) {
-  .nav {
+  /* Hide desktop nav row entirely */
+  .header-nav {
     display: none;
   }
 
+  /* Show hamburger */
   .hamburger {
     display: flex;
   }
