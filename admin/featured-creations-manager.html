@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Featured Creations Manager — Gachafruit Studio</title>
+  <link rel="stylesheet" href="featured-creations-manager.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+
+  <div class="manager-wrap">
+
+    <header class="manager-header">
+      <div class="manager-logo">Gachafruit</div>
+      <h1 class="manager-title">Featured Creations Manager</h1>
+      <p class="manager-subtitle">Manage the 4 featured tiles shown on the homepage</p>
+    </header>
+
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="importBtn" class="btn btn-secondary">
+          <span class="btn-icon">↑</span> Import JSON
+        </button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+
+        <button id="resetBtn" class="btn btn-secondary">
+          <span class="btn-icon">↺</span> Reset to Imported
+        </button>
+
+        <button id="clearBtn" class="btn btn-secondary btn-danger-hover">
+          <span class="btn-icon">×</span> Clear Draft
+        </button>
+      </div>
+
+      <div class="toolbar-group">
+        <button id="exportBtn" class="btn btn-primary">
+          <span class="btn-icon">↓</span> Export
+        </button>
+      </div>
+    </div>
+
+    <div class="status-bar" id="statusBar" role="status" aria-live="polite"></div>
+
+    <div class="tiles-grid" id="tilesGrid">
+      <!-- Tile cards injected by JS -->
+    </div>
+
+  </div>
+
+  <script src="featured-creations-manager.js"></script>
+</body>
+</html>
