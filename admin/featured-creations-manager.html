@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Featured Creations Manager — Gachafruit Studio</title>
+  <title>Homepage Content Manager — Gachafruit Studio</title>
   <link rel="stylesheet" href="featured-creations-manager.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
@@ -12,11 +12,12 @@
   <div class="manager-wrap">
 
     <header class="manager-header">
-      <div class="manager-logo">Gachafruit</div>
-      <h1 class="manager-title">Featured Creations Manager</h1>
-      <p class="manager-subtitle">Manage the 4 featured tiles shown on the homepage</p>
+      <div class="manager-logo">Gachafruit Studio</div>
+      <h1 class="manager-title">Homepage Content Manager</h1>
+      <p class="manager-subtitle">Manage Featured Creations and Explore All tiles. Export JSON when ready.</p>
     </header>
 
+    <!-- Shared toolbar — controls both sections -->
     <div class="toolbar">
       <div class="toolbar-group">
         <button id="importBtn" class="btn btn-secondary">
@@ -35,18 +36,75 @@
 
       <div class="toolbar-group">
         <button id="exportBtn" class="btn btn-primary">
-          <span class="btn-icon">↓</span> Export
+          <span class="btn-icon">↓</span> Export JSON
         </button>
       </div>
     </div>
 
     <div class="status-bar" id="statusBar" role="status" aria-live="polite"></div>
 
-    <div class="tiles-grid" id="tilesGrid">
-      <!-- Tile cards injected by JS -->
+    <!-- ======================================================
+         Section 1: Featured Creations
+         ====================================================== -->
+    <div class="manager-section">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">Featured Creations</h2>
+        <p class="manager-section-sub">4 tiles shown prominently on the homepage. Always manual.</p>
+      </div>
+      <div class="tiles-grid" id="tilesGrid">
+        <!-- Injected by JS -->
+      </div>
     </div>
 
-  </div>
+    <!-- ======================================================
+         Section 2: Explore All
+         ====================================================== -->
+    <div class="manager-section" id="exploreSection">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">Explore All</h2>
+        <p class="manager-section-sub">Manage the Explore All grid. The first <span id="visibleCountDisplay">8</span> enabled tiles appear on the homepage in order.</p>
+      </div>
+
+      <!-- Settings panel -->
+      <div class="settings-panel">
+
+        <div class="settings-group">
+          <div class="settings-label">Content Source</div>
+          <div class="mode-tabs">
+            <button class="source-mode-tab mode-tab active" data-mode="manual">Manual</button>
+            <button class="source-mode-tab mode-tab"        data-mode="api-with-fallback">API + Fallback</button>
+          </div>
+          <p class="api-mode-note hidden" id="apiModeNote">
+            Manual tiles serve as fallback when the API is unavailable. Worker integration is not yet active.
+          </p>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-label">Homepage tiles visible</div>
+          <input type="number" id="homepageVisibleCount" class="settings-input" value="8" min="1" max="50">
+        </div>
+
+        <div class="settings-group settings-group-wide">
+          <div class="settings-label">View All URL <span class="form-label-optional">optional</span></div>
+          <input type="url" id="viewAllUrl" class="settings-input" placeholder="https://...">
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-label">Total slots</div>
+          <div class="settings-inline">
+            <input type="number" id="slotCount" class="settings-input" value="12" min="1" max="100">
+            <button id="applySlotCount" class="btn btn-secondary btn-sm">Apply</button>
+          </div>
+        </div>
+
+      </div><!-- /settings-panel -->
+
+      <div class="tiles-grid" id="exploreTilesGrid">
+        <!-- Injected by JS -->
+      </div>
+    </div><!-- /exploreSection -->
+
+  </div><!-- /manager-wrap -->
 
   <script src="featured-creations-manager.js"></script>
 </body>

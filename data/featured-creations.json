@@ -1,49 +1,191 @@
 {
-  "updatedAt": "2026-03-29T21:49:40.045Z",
-  "tiles": [
-    {
-      "id": "F1",
-      "enabled": true,
-      "title": "Tupilaq Totem Planter",
-      "price": "$8 - $18",
-      "alt": "3D Printed Tupilaq Totem Planter - Gachafruit Original",
-      "url": "https://www.etsy.com/listing/4326308430/3d-printed-tupilaq-totem-planter-inuit",
-      "imageMode": "remote",
-      "localImage": "assets/images/featured-creations/F1.jpg",
-      "remoteImage": "https://i.etsystatic.com/60260227/r/il/348e7c/7018882117/il_1140xN.7018882117_7p9z.jpg"
-    },
-    {
-      "id": "F2",
-      "enabled": true,
-      "title": "Japanese Torii Gate",
-      "price": "$18.50 - $39.50",
-      "alt": "Modular 3D printed Japanese Torii Gate for desk or cable management",
-      "url": "https://www.etsy.com/listing/4476288959/torii-gate-cable-organizer-set-of-3",
-      "imageMode": "remote",
-      "localImage": "assets/images/featured-creations/F2.jpg",
-      "remoteImage": "https://i.etsystatic.com/60260227/r/il/5f568c/7881524685/il_1140xN.7881524685_4igc.jpg"
-    },
-    {
-      "id": "F3",
-      "enabled": false,
-      "title": "",
-      "price": "",
-      "alt": "",
-      "url": "",
-      "imageMode": "local",
-      "localImage": "assets/images/featured-creations/F3.jpg",
-      "remoteImage": ""
-    },
-    {
-      "id": "F4",
-      "enabled": false,
-      "title": "",
-      "price": "",
-      "alt": "",
-      "url": "",
-      "imageMode": "local",
-      "localImage": "assets/images/featured-creations/F4.jpg",
-      "remoteImage": ""
-    }
-  ]
+  "updatedAt": "2026-03-30T23:35:30.441Z",
+  "featuredCreations": {
+    "tiles": [
+      {
+        "id": "F1",
+        "enabled": true,
+        "title": "Tupilaq Totem Planter",
+        "price": "$8 - $18",
+        "alt": "3D Printed Tupilaq Totem Planter - Gachafruit Original",
+        "url": "https://www.etsy.com/listing/4326308430/3d-printed-tupilaq-totem-planter-inuit",
+        "imageMode": "remote",
+        "localImage": "assets/images/featured-creations/F1.jpg",
+        "remoteImage": "https://i.etsystatic.com/60260227/r/il/348e7c/7018882117/il_1140xN.7018882117_7p9z.jpg"
+      },
+      {
+        "id": "F2",
+        "enabled": true,
+        "title": "Japanese Torii Gate",
+        "price": "$18.50 - $39.50",
+        "alt": "Modular 3D printed Japanese Torii Gate for desk or cable management",
+        "url": "https://www.etsy.com/listing/4476288959/torii-gate-cable-organizer-set-of-3",
+        "imageMode": "remote",
+        "localImage": "assets/images/featured-creations/F2.jpg",
+        "remoteImage": "https://i.etsystatic.com/60260227/r/il/5f568c/7881524685/il_1140xN.7881524685_4igc.jpg"
+      },
+      {
+        "id": "F3",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/featured-creations/F3.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "F4",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/featured-creations/F4.jpg",
+        "remoteImage": ""
+      }
+    ]
+  },
+  "exploreAll": {
+    "mode": "manual",
+    "homepageVisibleCount": 8,
+    "viewAllUrl": "",
+    "slotCount": 12,
+    "manualTiles": [
+      {
+        "id": "E1",
+        "enabled": true,
+        "title": "Aztec Tlaloc Pen Holder",
+        "price": "$26.95",
+        "alt": "3D Printed Aztec Pen Holder Image",
+        "url": "https://www.etsy.com/listing/4346628860/aztec-tlaloc-pen-holder-rain-god-desk",
+        "imageMode": "remote",
+        "localImage": "assets/images/explore-all/E1.jpg",
+        "remoteImage": "https://i.etsystatic.com/60260227/r/il/1c0060/7081736366/il_1140xN.7081736366_srob.jpg"
+      },
+      {
+        "id": "E2",
+        "enabled": true,
+        "title": "Mayan Jaguar Pen Holder",
+        "price": "$26.95",
+        "alt": "3D Printed Mayan Jaguar Pen Holder Image",
+        "url": "https://www.etsy.com/listing/4353010502/mayan-jaguar-head-pen-holder-3d-printed",
+        "imageMode": "remote",
+        "localImage": "assets/images/explore-all/E2.jpg",
+        "remoteImage": "https://i.etsystatic.com/60260227/r/il/aea409/7113259314/il_1140xN.7113259314_or62.jpg"
+      },
+      {
+        "id": "E3",
+        "enabled": true,
+        "title": "Aztec Tlaloc Head",
+        "price": "$24",
+        "alt": "3D Printed Aztec Tlaloc Head Image",
+        "url": "https://www.etsy.com/listing/4346621240/aztec-tlaloc-head-statue-3d-printed",
+        "imageMode": "remote",
+        "localImage": "assets/images/explore-all/E3.jpg",
+        "remoteImage": "https://i.etsystatic.com/60260227/r/il/14f7e3/7129646165/il_1140xN.7129646165_edgv.jpg"
+      },
+      {
+        "id": "E4",
+        "enabled": true,
+        "title": "Chinese Guardian Lion Heads",
+        "price": "$8.00 - $18.00",
+        "alt": "3D Printed Chinese Shishi guardian lion head image",
+        "url": "https://www.etsy.com/listing/4325681110/3d-printed-chinese-guardian-lion-head",
+        "imageMode": "remote",
+        "localImage": "assets/images/explore-all/E4.jpg",
+        "remoteImage": "https://i.etsystatic.com/60260227/r/il/4f0aa8/7016092135/il_1140xN.7016092135_fcxs.jpg"
+      },
+      {
+        "id": "E5",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/explore-all/E5.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "E6",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/explore-all/E6.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "E7",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/explore-all/E7.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "E8",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/explore-all/E8.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "E9",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/explore-all/E9.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "E10",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/explore-all/E10.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "E11",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/explore-all/E11.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "E12",
+        "enabled": false,
+        "title": "",
+        "price": "",
+        "alt": "",
+        "url": "",
+        "imageMode": "local",
+        "localImage": "assets/images/explore-all/E12.jpg",
+        "remoteImage": ""
+      }
+    ]
+  }
 }

@@ -1,8 +1,8 @@
 /* ============================================================
-   featured.js — Featured Creations section
+   explore.js — Explore All section
    Fetches /data/featured-creations.json and renders enabled
-   tiles into #featured-grid using the existing card markup.
-   Fails silently if the JSON is missing or malformed.
+   manual tiles into #explore-grid using the product-card--sm
+   variant. Fails silently if the JSON is missing or malformed.
    ============================================================ */
 
 (function () {
@@ -11,7 +11,7 @@
   const DATA_PATH = 'data/featured-creations.json';
 
   async function init() {
-    const grid = document.getElementById('featured-grid');
+    const grid = document.getElementById('explore-grid');
     if (!grid) return;
 
     let data;
@@ -20,15 +20,17 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       data = await res.json();
     } catch (_) {
-      // JSON unavailable or malformed — leave section as-is (grid stays empty)
       return;
     }
 
-    // Support new structure (data.featuredCreations.tiles) and old flat structure (data.tiles)
-    const tiles = data.featuredCreations?.tiles ?? data.tiles;
-    if (!Array.isArray(tiles)) return;
+    const section = data.exploreAll;
+    if (!section || !Array.isArray(section.manualTiles)) return;
 
-    const enabled = tiles.filter(t => t.enabled === true);
+    const visibleCount = section.homepageVisibleCount > 0 ? section.homepageVisibleCount : 8;
+    const enabled = section.manualTiles
+      .filter(t => t.enabled === true)
+      .slice(0, visibleCount);
+
     if (enabled.length === 0) return;
 
     grid.innerHTML = '';
@@ -50,19 +52,19 @@
          </div>`
       : '';
 
-    const href      = tile.url || '#';
-    const external  = tile.url ? ' target="_blank" rel="noopener noreferrer"' : '';
+    const href     = tile.url || '#';
+    const external = tile.url ? ' target="_blank" rel="noopener noreferrer"' : '';
     const ariaLabel = tile.title ? `View details for ${esc(tile.title)}` : 'View details';
 
     const article = document.createElement('article');
-    article.className = 'product-card';
+    article.className = 'product-card product-card--sm';
     article.innerHTML = `
       <div class="product-card__img">${imgHtml}</div>
       <div class="product-card__body">
         <h3 class="product-card__title">${esc(tile.title)}</h3>
         ${metaHtml}
         <div class="product-card__cta">
-          <a href="${esc(href)}" class="btn btn--outline"${external} aria-label="${ariaLabel}">View Details</a>
+          <a href="${esc(href)}" class="btn btn--outline"${external} aria-label="${ariaLabel}">View</a>
         </div>
       </div>`;
 

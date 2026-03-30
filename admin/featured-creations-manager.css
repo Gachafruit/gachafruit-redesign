@@ -572,6 +572,152 @@ input::placeholder { color: var(--muted-light); }
 .preview-disabled-note.show { display: block; }
 
 /* ============================================================
+   Manager sections (Featured Creations / Explore All)
+   ============================================================ */
+.manager-section {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.manager-section-header {
+  margin-bottom: 1.25rem;
+}
+
+.manager-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.2rem;
+}
+
+.manager-section-sub {
+  font-size: 0.825rem;
+  color: var(--muted);
+}
+
+/* ============================================================
+   Explore All settings panel
+   ============================================================ */
+.settings-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.25rem;
+  align-items: flex-start;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 140px;
+}
+
+.settings-group-wide {
+  flex: 1;
+  min-width: 220px;
+}
+
+.settings-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.settings-input {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.825rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.settings-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+input[type="number"].settings-input {
+  width: 80px;
+}
+
+.settings-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+}
+
+.api-mode-note {
+  font-size: 0.72rem;
+  color: var(--info-text);
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.6rem;
+  max-width: 280px;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   Tile header — move controls (Explore All)
+   ============================================================ */
+.tile-id-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.move-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.move-btn {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  line-height: 1;
+  padding: 0;
+}
+.move-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.move-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 600px) {
@@ -579,4 +725,6 @@ input::placeholder { color: var(--muted-light); }
   .toolbar { flex-direction: column; align-items: stretch; }
   .toolbar-group { justify-content: stretch; }
   .btn { justify-content: center; }
+  .settings-panel { flex-direction: column; }
+  .settings-group-wide { min-width: 0; }
 }
