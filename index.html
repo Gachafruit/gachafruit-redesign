@@ -85,39 +85,8 @@
         <section class="featured-section" id="originals" aria-labelledby="featured-heading">
           <span class="section-label">Highlights</span>
           <h2 class="section-heading" id="featured-heading">Featured Creations</h2>
-          <div class="featured-grid">
-
-            <article class="product-card">
-              <div class="product-card__img">
-                <div class="img-placeholder"></div>
-              </div>
-              <div class="product-card__body">
-                <h3 class="product-card__title">3D Printed Tupi-Laq Totem Planter Set</h3>
-                <div class="product-card__meta">
-                  <span class="product-card__price">$8.00</span>
-                  <span class="badge badge--shipping">Free Shipping</span>
-                </div>
-                <div class="product-card__cta">
-                  <a href="#" class="btn btn--outline" aria-label="View details for Tupi-Laq Totem Planter Set">View Details</a>
-                </div>
-              </div>
-            </article>
-
-            <article class="product-card">
-              <div class="product-card__img">
-                <div class="img-placeholder"></div>
-              </div>
-              <div class="product-card__body">
-                <h3 class="product-card__title">Torii Gate Cable Organizer (Set of 3)</h3>
-                <div class="product-card__meta">
-                  <span class="product-card__price">$35.00</span>
-                </div>
-                <div class="product-card__cta">
-                  <a href="#" class="btn btn--outline" aria-label="View details for Torii Gate Cable Organizer">View Details</a>
-                </div>
-              </div>
-            </article>
-
+          <div class="featured-grid" id="featured-grid">
+            <!-- Populated by js/components/featured.js from data/featured-creations.json -->
           </div>
         </section>
 
@@ -248,5 +217,6 @@
   </footer>
 
   <script src="js/components/header.js" defer></script>
+  <script src="js/components/featured.js" defer></script>
 </body>
 </html>
