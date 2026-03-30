@@ -1,31 +1,31 @@
 {
-  "updatedAt": "2026-03-29T00:00:00.000Z",
+  "updatedAt": "2026-03-29T21:49:40.045Z",
   "tiles": [
     {
       "id": "F1",
       "enabled": true,
-      "title": "",
-      "price": "",
-      "alt": "",
-      "url": "",
-      "imageMode": "local",
+      "title": "Tupilaq Totem Planter",
+      "price": "$8 - $18",
+      "alt": "3D Printed Tupilaq Totem Planter - Gachafruit Original",
+      "url": "https://www.etsy.com/listing/4326308430/3d-printed-tupilaq-totem-planter-inuit",
+      "imageMode": "remote",
       "localImage": "assets/images/featured-creations/F1.jpg",
-      "remoteImage": ""
+      "remoteImage": "https://i.etsystatic.com/60260227/r/il/348e7c/7018882117/il_1140xN.7018882117_7p9z.jpg"
     },
     {
       "id": "F2",
       "enabled": true,
-      "title": "",
-      "price": "",
-      "alt": "",
-      "url": "",
-      "imageMode": "local",
+      "title": "Japanese Torii Gate",
+      "price": "$18.50 - $39.50",
+      "alt": "Modular 3D printed Japanese Torii Gate for desk or cable management",
+      "url": "https://www.etsy.com/listing/4476288959/torii-gate-cable-organizer-set-of-3",
+      "imageMode": "remote",
       "localImage": "assets/images/featured-creations/F2.jpg",
-      "remoteImage": ""
+      "remoteImage": "https://i.etsystatic.com/60260227/r/il/5f568c/7881524685/il_1140xN.7881524685_4igc.jpg"
     },
     {
       "id": "F3",
-      "enabled": true,
+      "enabled": false,
       "title": "",
       "price": "",
       "alt": "",
@@ -36,7 +36,7 @@
     },
     {
       "id": "F4",
-      "enabled": true,
+      "enabled": false,
       "title": "",
       "price": "",
       "alt": "",

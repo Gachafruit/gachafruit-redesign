@@ -32,6 +32,13 @@
   background-color: var(--color-surface);
 }
 
+.product-card__img img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
 /* ---- Body ---- */
 .product-card__body {
   padding: var(--space-md);
