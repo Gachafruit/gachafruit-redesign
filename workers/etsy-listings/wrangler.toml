@@ -1,0 +1,30 @@
+name            = "gachafruit-etsy-listings"
+main            = "index.js"
+compatibility_date = "2024-09-23"
+
+# ── Non-sensitive configuration vars ──────────────────────────────────────────
+# ETSY_SHOP_ID: The numeric Etsy shop ID for Gachafruit.
+#   To find it: GET https://openapi.etsy.com/v3/application/shops?shop_name=Gachafruit
+#   (requires x-api-key header) — copy the `shop_id` field from the response.
+#
+# ALLOWED_ORIGIN: The exact origin of your Cloudflare Pages site.
+#   Requests from other origins will be rejected with 403.
+#   Set to "*" only for development — never in production.
+[vars]
+ETSY_SHOP_ID   = "60260227"          # fill in before deploying
+ALLOWED_ORIGIN = "https://gachafruit.com"
+
+# ── Secrets (never stored here — set via CLI) ──────────────────────────────────
+# After deploying, run:
+#   wrangler secret put ETSY_API_KEY
+# Then paste your Etsy API key when prompted.
+# The secret is encrypted at rest in Cloudflare and is NEVER in this file.
+
+# ── Custom route (optional) ───────────────────────────────────────────────────
+# Uncomment and update if you want the Worker on your own domain instead of
+# *.workers.dev. The Cloudflare Pages site and the Worker must be on the same
+# Cloudflare account zone.
+#
+# [[routes]]
+# pattern = "gachafruit.com/api/listings"
+# zone_name = "gachafruit.com"

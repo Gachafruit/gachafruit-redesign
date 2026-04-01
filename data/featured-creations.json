@@ -50,6 +50,7 @@
   },
   "exploreAll": {
     "mode": "manual",
+    "apiUrl": "",
     "homepageVisibleCount": 8,
     "viewAllUrl": "/explore-all/",
     "slotCount": 12,

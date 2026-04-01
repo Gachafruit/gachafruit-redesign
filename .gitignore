@@ -1,0 +1,10 @@
+# Wrangler local dev secrets — NEVER commit these
+workers/**/.dev.vars
+.dev.vars
+
+# Wrangler build output
+workers/**/dist/
+.wrangler/
+
+# Node (if Wrangler is installed locally)
+node_modules/

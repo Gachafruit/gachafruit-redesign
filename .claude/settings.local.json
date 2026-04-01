@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const d = require\\(''./data/featured-creations.json''\\); console.log\\(''mode:'', d.exploreAll.mode, ''| apiUrl:'', JSON.stringify\\(d.exploreAll.apiUrl\\), ''| viewAllUrl:'', d.exploreAll.viewAllUrl\\);\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\(''data/featured-creations.json''\\)\\); ea=d[''exploreAll'']; print\\(''mode:'', ea[''mode''], ''| apiUrl:'', repr\\(ea[''apiUrl'']\\), ''| viewAllUrl:'', ea[''viewAllUrl'']\\)\")"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+# Copy this file to .dev.vars for local Wrangler development.
+# .dev.vars is listed in .gitignore and must NEVER be committed.
+#
+# Usage:
+#   cp .dev.vars.example .dev.vars
+#   # then fill in your values
+#   wrangler dev
+
+ETSY_API_KEY=your_etsy_api_key_here
+ETSY_SHOP_ID=your_numeric_shop_id_here
+ALLOWED_ORIGIN=*
