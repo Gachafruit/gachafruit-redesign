@@ -1,161 +1,210 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gachafruit — Curated 3D Printed Art &amp; Creative Goods</title>
-  <meta name="description" content="Handcrafted 3D printed objects, yo-yos, and creative goods made in Tulsa, Oklahoma.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gachafruit — Curated 3D Printed Art &amp; Creative Goods</title>
+    <meta
+      name="description"
+      content="3D printed objects, mechanical experiments, and small-batch creations made in Tulsa, Oklahoma."
+    />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components/header.css">
-  <link rel="stylesheet" href="css/components/hero.css">
-  <link rel="stylesheet" href="css/components/card.css">
-  <link rel="stylesheet" href="css/components/footer.css">
-</head>
-<body>
-
-  <!-- ======================================================
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components/header.css" />
+    <link rel="stylesheet" href="css/components/hero.css" />
+    <link rel="stylesheet" href="css/components/card.css" />
+    <link rel="stylesheet" href="css/components/footer.css" />
+  </head>
+  <body>
+    <!-- ======================================================
        Header
        ====================================================== -->
-  <header class="site-header">
+    <header class="site-header">
+      <!-- Row 1: logo (centered) + hamburger (mobile only) -->
+      <div class="header-logo-row">
+        <a href="/" class="logo" aria-label="Gachafruit home">
+          <img
+            src="assets/images/Gachafruit-Logo.png"
+            alt=""
+            class="logo__mark"
+            aria-hidden="true"
+          />
+          <span class="logo__text">
+            <span class="logo__name">Gachafruit</span>
+            <span class="logo__sub">Studio</span>
+          </span>
+        </a>
 
-    <!-- Row 1: logo (centered) + hamburger (mobile only) -->
-    <div class="header-logo-row">
-      <a href="/" class="logo" aria-label="Gachafruit home">
-        <img src="assets/images/Gachafruit-Logo.png" alt="" class="logo__mark" aria-hidden="true">
-        <span class="logo__text">
-          <span class="logo__name">Gachafruit</span>
-          <span class="logo__sub">Studio</span>
-        </span>
-      </a>
-
-      <button class="hamburger"
-              aria-label="Toggle menu"
-              aria-expanded="false"
-              aria-controls="mobile-nav">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-
-    <!-- Row 2: desktop nav (centered, below logo) -->
-    <nav class="header-nav" aria-label="Main navigation">
-      <ul class="nav-list">
-        <li><a href="#originals"   class="nav-link">Originals</a></li>
-        <li><a href="#studio"      class="nav-link">The Studio</a></li>
-        <li><a href="#accessories" class="nav-link">Heritage</a></li>
-      </ul>
-    </nav>
-
-    <!-- Mobile nav drawer -->
-    <nav class="mobile-nav" id="mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
-      <ul class="mobile-nav-list">
-        <li><a href="#originals"   class="nav-link">Originals</a></li>
-        <li><a href="#studio"      class="nav-link">The Studio</a></li>
-        <li><a href="#accessories" class="nav-link">Heritage</a></li>
-      </ul>
-    </nav>
-
-  </header>
-
-  <!-- ======================================================
-       Main content — two-column homepage grid
-       ====================================================== -->
-  <main>
-    <div class="home-grid">
-
-      <!-- ---- Left column ---- -->
-      <div class="home-grid__left">
-
-        <!-- Brand intro -->
-        <section class="brand-intro" aria-label="Brand introduction">
-          <span class="location-tag">Tulsa, Oklahoma</span>
-          <h1 class="hero-headline">Curated<br>Objects,<br>3D&nbsp;Printed<br>Art</h1>
-          <p class="hero-description">
-            Handcrafted 3D printed objects, yo-yos, and creative goods — each one made with care in Oklahoma.
-          </p>
-        </section>
-
-        <!-- Featured Creations -->
-        <section class="featured-section" id="originals" aria-labelledby="featured-heading">
-          <span class="section-label">Highlights</span>
-          <h2 class="section-heading" id="featured-heading">Featured Creations</h2>
-          <div class="featured-grid" id="featured-grid">
-            <!-- Populated by js/components/featured.js from data/featured-creations.json -->
-          </div>
-        </section>
-
-      </div><!-- /home-grid__left -->
-
-      <!-- ---- Right column ---- -->
-      <div class="home-grid__right">
-
-        <!-- Hero image -->
-        <div class="hero-image-wrapper">
-          <img src="assets/images/gallery-hero.png" alt="Gachafruit Studio — curated 3D printed objects" class="hero-img">
-        </div>
-
-        <!-- Explore All -->
-        <section class="explore-section" id="studio" aria-labelledby="explore-heading">
-          <span class="section-label">The Collection</span>
-          <h2 class="section-heading" id="explore-heading">Explore All</h2>
-          <div class="explore-grid" id="explore-grid">
-            <!-- Populated by js/components/explore.js from data/featured-creations.json -->
-          </div>
-        </section>
-
-      </div><!-- /home-grid__right -->
-
-    </div><!-- /home-grid -->
-  </main>
-
-  <!-- ======================================================
-       Footer
-       ====================================================== -->
-  <footer class="site-footer" id="accessories">
-    <div class="footer-inner">
-
-      <p class="footer-copy">
-        &copy; 2026 <strong>Gachafruit</strong> &middot; Tulsa, Oklahoma
-      </p>
-
-      <nav class="footer-links" aria-label="Marketplace links">
-        <a href="https://www.etsy.com/shop/Gachafruit" class="footer-link">Etsy</a>
-        
-        <a href="#" class="footer-link">Amazon</a>
-      </nav>
-
-      <div class="footer-right">
-        <nav class="footer-social" aria-label="Social links">
-          <a href="https://www.instagram.com/gachafruitstudio" class="footer-social__link">Instagram</a>
-          <a href="https://www.youtube.com/@GachafruitStudio" class="footer-social__link">YouTube</a>
-        </nav>
-
-        <form class="footer-newsletter" aria-label="Newsletter signup">
-          <label for="newsletter-email" class="sr-only">Email address</label>
-          <input
-            type="email"
-            id="newsletter-email"
-            name="email"
-            class="newsletter-input"
-            placeholder="Email address"
-            autocomplete="email"
-          >
-          <button type="submit" class="newsletter-btn">Sign Up</button>
-        </form>
+        <button
+          class="hamburger"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
 
-    </div>
-  </footer>
+      <!-- Row 2: desktop nav (centered, below logo) -->
+      <nav class="header-nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="#originals" class="nav-link">Originals</a></li>
+          <li><a href="#studio" class="nav-link">The Studio</a></li>
+          <li><a href="#accessories" class="nav-link">Heritage</a></li>
+        </ul>
+      </nav>
 
-  <script src="js/components/header.js" defer></script>
-  <script src="js/components/featured.js" defer></script>
-  <script src="js/components/card-builder.js" defer></script>
-  <script src="js/components/explore.js" defer></script>
-</body>
+      <!-- Mobile nav drawer -->
+      <nav
+        class="mobile-nav"
+        id="mobile-nav"
+        aria-hidden="true"
+        aria-label="Mobile navigation"
+      >
+        <ul class="mobile-nav-list">
+          <li><a href="#originals" class="nav-link">Originals</a></li>
+          <li><a href="#studio" class="nav-link">The Studio</a></li>
+          <li><a href="#accessories" class="nav-link">Heritage</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- ======================================================
+       Main content — two-column homepage grid
+       ====================================================== -->
+    <main>
+      <div class="home-grid">
+        <!-- ---- Left column ---- -->
+        <div class="home-grid__left">
+          <!-- Brand intro -->
+          <section class="brand-intro" aria-label="Brand introduction">
+            <span class="location-tag">Tulsa, Oklahoma</span>
+            <h1 class="hero-headline">
+              Mechanical Experiments,<br />
+              Sculptural<br />
+              Prints
+            </h1>
+            <p class="hero-description">
+              Beeswax, polymers, and a bit of geometry. Made entirely in-house.
+            </p>
+          </section>
+
+        <!--
+          NOTE:
+          "Recent Experiments" is the user-facing label for what was previously
+          called "Featured Creations".
+
+          Internal references (JS, JSON, IDs) may still use:
+          - featured
+          - featured-creations
+          - featured-grid
+
+          These refer to the same section, future Banana <3.
+        -->
+          <section
+            class="featured-section"
+            id="originals"
+            aria-labelledby="featured-heading"
+          >
+            <span class="section-label">Highlights</span>
+            <h2 class="section-heading" id="featured-heading">
+              Recent Experiments <!-- formerly "Featured Creations" -->
+            </h2>
+            <div class="featured-grid" id="featured-grid">
+              <!-- Populated by js/components/featured.js from data/featured-creations.json -->
+            </div>
+          </section>
+        </div>
+        <!-- /home-grid__left -->
+
+        <!-- ---- Right column ---- -->
+        <div class="home-grid__right">
+          <!-- Hero image -->
+          <div class="hero-image-wrapper">
+            <img
+              src="assets/images/gallery-hero.png"
+              alt="Gachafruit Studio — curated 3D printed objects"
+              class="hero-img"
+            />
+          </div>
+
+          <!-- Explore All -->
+          <section
+            class="explore-section"
+            id="studio"
+            aria-labelledby="explore-heading"
+          >
+            <span class="section-label">The Collection</span>
+            <h2 class="section-heading" id="explore-heading">Explore All</h2>
+            <div class="explore-grid" id="explore-grid">
+              <!-- Populated by js/components/explore.js from data/featured-creations.json -->
+            </div>
+          </section>
+        </div>
+        <!-- /home-grid__right -->
+      </div>
+      <!-- /home-grid -->
+    </main>
+
+    <!-- ======================================================
+       Footer
+       ====================================================== -->
+    <footer class="site-footer" id="accessories">
+      <div class="footer-inner">
+        <p class="footer-copy">
+          &copy; 2026 <strong>Gachafruit</strong> &middot; Tulsa, Oklahoma
+        </p>
+
+        <nav class="footer-links" aria-label="Marketplace links">
+          <a href="https://www.etsy.com/shop/Gachafruit" class="footer-link"
+            >Etsy</a
+          >
+
+          <a href="#" class="footer-link">Amazon</a>
+        </nav>
+
+        <div class="footer-right">
+          <nav class="footer-social" aria-label="Social links">
+            <a
+              href="https://www.instagram.com/gachafruitstudio"
+              class="footer-social__link"
+              >Instagram</a
+            >
+            <a
+              href="https://www.youtube.com/@GachafruitStudio"
+              class="footer-social__link"
+              >YouTube</a
+            >
+          </nav>
+
+          <form class="footer-newsletter" aria-label="Newsletter signup">
+            <label for="newsletter-email" class="sr-only">Email address</label>
+            <input
+              type="email"
+              id="newsletter-email"
+              name="email"
+              class="newsletter-input"
+              placeholder="Email address"
+              autocomplete="email"
+            />
+            <button type="submit" class="newsletter-btn">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/components/header.js" defer></script>
+    <script src="js/components/featured.js" defer></script>
+    <script src="js/components/card-builder.js" defer></script>
+    <script src="js/components/explore.js" defer></script>
+  </body>
 </html>
