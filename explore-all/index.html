@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore All — Gachafruit Studio</title>
+  <meta name="description" content="Browse the full collection of 3D printed objects and creative goods from Gachafruit Studio.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components/header.css">
+  <link rel="stylesheet" href="../css/components/card.css">
+  <link rel="stylesheet" href="../css/components/footer.css">
+
+  <style>
+    /* ---- Page intro ---- */
+    .page-intro {
+      padding: var(--space-2xl) 0 var(--space-xl);
+      border-bottom: 1px solid var(--color-border-soft);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .page-intro .section-label {
+      display: block;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .page-intro__heading {
+      font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-4xl));
+      font-weight: var(--font-weight-black);
+      letter-spacing: -0.03em;
+      line-height: var(--line-height-tight);
+      color: var(--color-text);
+      margin-bottom: var(--space-md);
+    }
+
+    .page-intro__description {
+      font-size: var(--font-size-base);
+      color: var(--color-muted);
+      line-height: var(--line-height-base);
+      max-width: 52ch;
+    }
+
+    /* ---- Product grid ---- */
+    .explore-page-section {
+      padding-bottom: var(--space-3xl);
+    }
+
+    .explore-page-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+    }
+
+    @media (max-width: 1024px) {
+      .explore-page-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-intro {
+        padding: var(--space-xl) 0 var(--space-lg);
+        margin-bottom: var(--space-xl);
+      }
+
+      .explore-page-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .explore-page-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================
+       Header
+       ====================================================== -->
+  <header class="site-header">
+
+    <!-- Row 1: logo (centered) + hamburger (mobile only) -->
+    <div class="header-logo-row">
+      <a href="/" class="logo" aria-label="Gachafruit home">
+        <img src="../assets/images/Gachafruit-Logo.png" alt="" class="logo__mark" aria-hidden="true">
+        <span class="logo__text">
+          <span class="logo__name">Gachafruit</span>
+          <span class="logo__sub">Studio</span>
+        </span>
+      </a>
+
+      <button class="hamburger"
+              aria-label="Toggle menu"
+              aria-expanded="false"
+              aria-controls="mobile-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Row 2: desktop nav (centered, below logo) -->
+    <nav class="header-nav" aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="/#originals"   class="nav-link">Originals</a></li>
+        <li><a href="/#studio"      class="nav-link">The Studio</a></li>
+        <li><a href="/#accessories" class="nav-link">Heritage</a></li>
+      </ul>
+    </nav>
+
+    <!-- Mobile nav drawer -->
+    <nav class="mobile-nav" id="mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
+      <ul class="mobile-nav-list">
+        <li><a href="/#originals"   class="nav-link">Originals</a></li>
+        <li><a href="/#studio"      class="nav-link">The Studio</a></li>
+        <li><a href="/#accessories" class="nav-link">Heritage</a></li>
+      </ul>
+    </nav>
+
+  </header>
+
+  <!-- ======================================================
+       Main content
+       ====================================================== -->
+  <main>
+    <div class="inner">
+
+      <!-- Page intro -->
+      <div class="page-intro">
+        <span class="section-label">The Collection</span>
+        <h1 class="page-intro__heading">Explore All</h1>
+        <p class="page-intro__description">
+          Every piece, in one place. Handcrafted 3D printed objects made in Tulsa — available on Etsy.
+        </p>
+      </div>
+
+      <!-- Product grid -->
+      <section class="explore-page-section" aria-label="All products">
+        <div class="explore-page-grid" id="explore-page-grid">
+          <!-- Populated by js/components/explore-page.js from data/featured-creations.json -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ======================================================
+       Footer
+       ====================================================== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+
+      <p class="footer-copy">
+        &copy; 2026 <strong>Gachafruit</strong> &middot; Tulsa, Oklahoma
+      </p>
+
+      <nav class="footer-links" aria-label="Marketplace links">
+        <a href="https://www.etsy.com/shop/Gachafruit" class="footer-link">Etsy</a>
+        <a href="#" class="footer-link">Amazon</a>
+      </nav>
+
+      <div class="footer-right">
+        <nav class="footer-social" aria-label="Social links">
+          <a href="https://www.instagram.com/gachafruitstudio" class="footer-social__link">Instagram</a>
+          <a href="https://www.youtube.com/@GachafruitStudio" class="footer-social__link">YouTube</a>
+        </nav>
+
+        <form class="footer-newsletter" aria-label="Newsletter signup">
+          <label for="newsletter-email" class="sr-only">Email address</label>
+          <input
+            type="email"
+            id="newsletter-email"
+            name="email"
+            class="newsletter-input"
+            placeholder="Email address"
+            autocomplete="email"
+          >
+          <button type="submit" class="newsletter-btn">Sign Up</button>
+        </form>
+      </div>
+
+    </div>
+  </footer>
+
+  <script src="../js/components/header.js" defer></script>
+  <script src="../js/components/card-builder.js" defer></script>
+  <script src="../js/components/explore-page.js" defer></script>
+</body>
+</html>

@@ -51,7 +51,7 @@
   "exploreAll": {
     "mode": "manual",
     "homepageVisibleCount": 8,
-    "viewAllUrl": "",
+    "viewAllUrl": "/explore-all/",
     "slotCount": 12,
     "manualTiles": [
       {

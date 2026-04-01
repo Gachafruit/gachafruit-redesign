@@ -130,6 +130,17 @@
   gap: var(--space-sm);
 }
 
+/* ---- View All CTA — injected below explore grid by explore.js ---- */
+.explore-view-all {
+  margin-top: var(--space-md);
+  text-align: right;
+}
+
+.explore-view-all__link {
+  width: auto;
+  display: inline-flex;
+}
+
 /* ============================================================
    Responsive
    ============================================================ */
