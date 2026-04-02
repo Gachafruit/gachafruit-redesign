@@ -49,8 +49,8 @@
     ]
   },
   "exploreAll": {
-    "mode": "manual",
-    "apiUrl": "",
+    "mode": "api-with-fallback",
+    "apiUrl": "https://gachafruit-etsy-listings.andickso21.workers.dev/",
     "homepageVisibleCount": 8,
     "viewAllUrl": "/explore-all/",
     "slotCount": 12,
