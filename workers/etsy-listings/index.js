@@ -99,7 +99,7 @@ async function fetchAllListings(shopId, apiKey) {
     const url = new URL(`${ETSY_API_BASE}/shops/${shopId}/listings/active`);
     url.searchParams.set('limit', String(LISTINGS_PER_PAGE));
     url.searchParams.set('offset', String(offset));
-    url.searchParams.append('includes[]', 'Images');
+    url.searchParams.append('includes', 'Images');
     url.searchParams.set('sort_on', 'created');
     url.searchParams.set('sort_order', 'desc');
 
