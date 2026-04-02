@@ -7,25 +7,31 @@
  * Required secrets (set via `wrangler secret put`):
  *   ETSY_API_KEY   — your Etsy Open API v3 key
  *
- * Required vars (set in wrangler.toml or `wrangler secret put`):
- *   ETSY_SHOP_ID   — numeric Etsy shop ID (see deployment notes)
+ * Required vars (set in wrangler.toml):
+ *   ETSY_SHOP_ID   — numeric Etsy shop ID
  *   ALLOWED_ORIGIN — exact origin allowed for CORS, e.g. https://gachafruit.com
  *
  * Response shape:
  *   { source: "etsy-api", fetchedAt: "<ISO>", tiles: [ ...TileObject ] }
  *
- * Each TileObject is compatible with the Explore All manualTile schema:
+ * Each TileObject matches the Explore All manualTile schema:
  *   { id, enabled, title, price, alt, url, imageMode, localImage, remoteImage }
+ *
+ * Image fetching note:
+ *   The active listings endpoint does not return image data regardless of the
+ *   includes parameter. Images are fetched separately via the dedicated
+ *   GET /v3/application/listings/{listing_id}/images endpoint, in batches of
+ *   IMAGE_CONCURRENCY parallel requests.
  */
 
-const ETSY_API_BASE = 'https://openapi.etsy.com/v3/application';
-const LISTINGS_PER_PAGE = 100;
-const MAX_PAGES = 10;               // safety cap — 1,000 listings max
-const CACHE_TTL_SECONDS = 1800;     // 30 minutes
+const ETSY_API_BASE      = 'https://openapi.etsy.com/v3/application';
+const LISTINGS_PER_PAGE  = 100;
+const MAX_PAGES          = 10;    // safety cap — 1,000 listings max
+const IMAGE_CONCURRENCY  = 10;    // max parallel image requests per batch
+const CACHE_TTL_SECONDS  = 1800;  // 30 minutes
 
 export default {
   async fetch(request, env, ctx) {
-    // Only handle GET and OPTIONS
     if (request.method === 'OPTIONS') {
       return corsPreflightResponse(env);
     }
@@ -33,7 +39,6 @@ export default {
       return errorResponse(405, 'Method not allowed', env);
     }
 
-    // CORS origin check
     const originError = checkOrigin(request, env);
     if (originError) return originError;
 
@@ -48,7 +53,6 @@ export default {
       return cloned;
     }
 
-    // Validate required config
     if (!env.ETSY_API_KEY) {
       return errorResponse(500, 'Worker is missing ETSY_API_KEY secret', env);
     }
@@ -77,10 +81,7 @@ export default {
     addCorsHeaders(headers, request, env);
 
     const response = new Response(payload, { status: 200, headers });
-
-    // Store in edge cache
     ctx.waitUntil(cache.put(cacheKey, response.clone()));
-
     return response;
   },
 };
@@ -88,71 +89,120 @@ export default {
 // ── Etsy fetching ────────────────────────────────────────────────────────────
 
 /**
- * Paginates through all active shop listings and returns normalized tiles.
- * Etsy limits responses to LISTINGS_PER_PAGE items per request.
+ * Top-level orchestrator:
+ *   1. Fetch all active listing stubs (title, price, url — no images)
+ *   2. Fetch primary image for each listing in bounded parallel batches
+ *   3. Normalize each listing into a tile, merging in its image data
  */
 async function fetchAllListings(shopId, apiKey) {
-  const tiles = [];
+  const listings = await fetchListingPages(shopId, apiKey);
+  if (listings.length === 0) return [];
+
+  const listingIds = listings.map(l => l.listing_id);
+  const imageMap   = await fetchPrimaryImages(listingIds, apiKey);
+
+  return listings.map(listing =>
+    normalizeListing(listing, imageMap[listing.listing_id] || null)
+  );
+}
+
+/** Pages through GET /shops/{shopId}/listings/active until exhausted. */
+async function fetchListingPages(shopId, apiKey) {
+  const listings = [];
   let offset = 0;
 
   for (let page = 0; page < MAX_PAGES; page++) {
     const url = new URL(`${ETSY_API_BASE}/shops/${shopId}/listings/active`);
-    url.searchParams.set('limit', String(LISTINGS_PER_PAGE));
-    url.searchParams.set('offset', String(offset));
-    url.searchParams.append('includes', 'Images');
-    url.searchParams.set('sort_on', 'created');
+    url.searchParams.set('limit',      String(LISTINGS_PER_PAGE));
+    url.searchParams.set('offset',     String(offset));
+    url.searchParams.set('sort_on',    'created');
     url.searchParams.set('sort_order', 'desc');
 
     const res = await fetch(url.toString(), {
       headers: { 'x-api-key': apiKey },
-      cf: { cacheTtl: CACHE_TTL_SECONDS, cacheEverything: false },
     });
 
     if (!res.ok) {
       const body = await res.text().catch(() => '');
-      throw new Error(`Etsy API ${res.status}: ${body.slice(0, 200)}`);
+      throw new Error(`Etsy listings API ${res.status}: ${body.slice(0, 200)}`);
     }
 
-    const data = await res.json();
+    const data    = await res.json();
     const results = data.results;
 
     if (!Array.isArray(results) || results.length === 0) break;
-
-    for (const listing of results) {
-      tiles.push(normalizeListing(listing));
-    }
-
-    // Stop if we received fewer than a full page — no more pages
+    listings.push(...results);
     if (results.length < LISTINGS_PER_PAGE) break;
-
     offset += LISTINGS_PER_PAGE;
   }
 
-  return tiles;
+  return listings;
 }
 
 /**
- * Converts a single Etsy listing object into a site-compatible tile.
- * Schema matches the Explore All manualTile contract exactly, with
- * localImage always empty (API tiles have no local fallback path).
+ * Fetches the primary image for each listing ID.
+ * Processes in batches of IMAGE_CONCURRENCY to stay within Etsy rate limits.
+ *
+ * Returns: { [listingId]: { url: string, alt: string } | null }
  */
-function normalizeListing(listing) {
-  const image = listing.images && listing.images[0];
-  const remoteImage = image
-    ? (image.url_570xN || image.url_fullxfull || image.url_170x135 || '')
-    : '';
-  const alt = (image && image.alt_text) || listing.title || '';
+async function fetchPrimaryImages(listingIds, apiKey) {
+  const imageMap = {};
 
+  for (let i = 0; i < listingIds.length; i += IMAGE_CONCURRENCY) {
+    const batch   = listingIds.slice(i, i + IMAGE_CONCURRENCY);
+    const results = await Promise.all(
+      batch.map(id => fetchListingPrimaryImage(id, apiKey))
+    );
+    batch.forEach((id, idx) => {
+      if (results[idx]) imageMap[id] = results[idx];
+    });
+  }
+
+  return imageMap;
+}
+
+/**
+ * Fetches images for a single listing from:
+ *   GET /v3/application/listings/{listing_id}/images
+ *
+ * Returns the rank-1 (primary) image, or null on any failure.
+ * Image URL preference: url_570xN → url_fullxfull → url_170x135
+ */
+async function fetchListingPrimaryImage(listingId, apiKey) {
+  try {
+    const url = `${ETSY_API_BASE}/listings/${listingId}/images`;
+    const res = await fetch(url, { headers: { 'x-api-key': apiKey } });
+    if (!res.ok) return null;
+
+    const data   = await res.json();
+    const images = data.results;
+    if (!Array.isArray(images) || images.length === 0) return null;
+
+    const primary = images.find(img => img.rank === 1) || images[0];
+    return {
+      url: primary.url_570xN || primary.url_fullxfull || primary.url_170x135 || '',
+      alt: primary.alt_text || '',
+    };
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * Converts a listing stub + its image data into a site-compatible tile.
+ * image param: { url: string, alt: string } | null
+ */
+function normalizeListing(listing, image) {
   return {
-    id: 'etsy-' + String(listing.listing_id),
-    enabled: true,
-    title: listing.title || '',
-    price: formatPrice(listing.price),
-    alt: alt,
-    url: listing.url || `https://www.etsy.com/listing/${listing.listing_id}`,
-    imageMode: 'remote',
-    localImage: '',
-    remoteImage: remoteImage,
+    id:          'etsy-' + String(listing.listing_id),
+    enabled:     true,
+    title:       listing.title || '',
+    price:       formatPrice(listing.price),
+    alt:         (image && image.alt) || listing.title || '',
+    url:         listing.url || `https://www.etsy.com/listing/${listing.listing_id}`,
+    imageMode:   'remote',
+    localImage:  '',
+    remoteImage: (image && image.url) || '',
   };
 }
 
@@ -168,7 +218,7 @@ function formatPrice(price) {
 
 function checkOrigin(request, env) {
   const allowedOrigin = (env.ALLOWED_ORIGIN || '').trim();
-  if (!allowedOrigin || allowedOrigin === '*') return null; // dev: open
+  if (!allowedOrigin || allowedOrigin === '*') return null;
 
   const requestOrigin = request.headers.get('Origin') || '';
   if (requestOrigin !== allowedOrigin) {
@@ -181,32 +231,32 @@ function checkOrigin(request, env) {
 }
 
 function addCorsHeaders(headers, request, env) {
-  const allowedOrigin = (env.ALLOWED_ORIGIN || '').trim();
-  const requestOrigin = request.headers.get('Origin') || '';
+  const allowedOrigin  = (env.ALLOWED_ORIGIN || '').trim();
+  const requestOrigin  = request.headers.get('Origin') || '';
   const origin = (!allowedOrigin || allowedOrigin === '*')
     ? requestOrigin || '*'
     : allowedOrigin;
 
-  headers.set('Access-Control-Allow-Origin', origin);
+  headers.set('Access-Control-Allow-Origin',  origin);
   headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
   headers.set('Access-Control-Allow-Headers', 'Content-Type');
   headers.set('Vary', 'Origin');
 }
 
 function corsPreflightResponse(env) {
-  const headers = new Headers({
-    'Access-Control-Allow-Origin': env.ALLOWED_ORIGIN || '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Max-Age': '86400',
+  return new Response(null, {
+    status: 204,
+    headers: new Headers({
+      'Access-Control-Allow-Origin':  env.ALLOWED_ORIGIN || '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age':       '86400',
+    }),
   });
-  return new Response(null, { status: 204, headers });
 }
 
 function errorResponse(status, message, env) {
   const headers = new Headers({ 'Content-Type': 'application/json' });
-  if (env) {
-    headers.set('Access-Control-Allow-Origin', env.ALLOWED_ORIGIN || '*');
-  }
+  if (env) headers.set('Access-Control-Allow-Origin', env.ALLOWED_ORIGIN || '*');
   return new Response(JSON.stringify({ error: message }), { status, headers });
 }
