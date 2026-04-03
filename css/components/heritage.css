@@ -1,0 +1,93 @@
+/* ============================================================
+   heritage.css — Heritage page components
+   Depends on: css/base.css, css/components/hero.css
+   ============================================================ */
+
+/* ============================================================
+   Slideshow placeholder (left column, below brand intro)
+   ============================================================ */
+.slideshow-placeholder {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 12px rgba(44, 39, 36, 0.06);
+}
+
+.slideshow-placeholder__frame {
+  position: relative;
+}
+
+.slideshow-placeholder__frame .img-placeholder {
+  aspect-ratio: 4 / 3;
+  background-color: var(--color-surface-alt);
+  display: block;
+  width: 100%;
+}
+
+.slideshow-placeholder__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-sm) var(--space-md);
+  background: linear-gradient(to top, rgba(44, 39, 36, 0.65) 0%, transparent 100%);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+}
+
+.slideshow-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background-color: var(--color-surface);
+}
+
+.slideshow-dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  transition: background-color var(--transition-fast);
+}
+
+.slideshow-dot--active {
+  background-color: var(--color-accent);
+}
+
+/* ============================================================
+   Heritage CTA block (right column, below hero image)
+   ============================================================ */
+.heritage-cta__heading {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+
+.heritage-cta__body {
+  font-size: var(--font-size-base);
+  color: var(--color-muted);
+  line-height: var(--line-height-base);
+  max-width: 48ch;
+  margin-bottom: var(--space-lg);
+}
+
+.heritage-cta__btn {
+  width: auto;
+  display: inline-flex;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  .heritage-cta__body {
+    max-width: 100%;
+  }
+}

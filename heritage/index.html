@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heritage — Gachafruit Studio</title>
+    <meta name="description" content="Dickson Antiquities and Gachafruit Studio — where ancestral artifacts meet modern geometric experiments. Shared workshop, shared vision." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/components/header.css" />
+    <link rel="stylesheet" href="../css/components/hero.css" />
+    <link rel="stylesheet" href="../css/components/card.css" />
+    <link rel="stylesheet" href="../css/components/footer.css" />
+    <link rel="stylesheet" href="../css/components/heritage.css" />
+  </head>
+  <body>
+
+    <!-- ============================================================
+         Header
+         ============================================================ -->
+    <header class="site-header">
+      <div class="header-logo-row">
+        <a href="/" class="logo" aria-label="Gachafruit home">
+          <img src="../assets/images/Gachafruit-Logo.png" alt="" class="logo__mark" aria-hidden="true" />
+          <span class="logo__text">
+            <span class="logo__name">Gachafruit</span>
+            <span class="logo__sub">Studio</span>
+          </span>
+        </a>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="/#originals" class="nav-link">Originals</a></li>
+          <li><a href="/#studio" class="nav-link">The Studio</a></li>
+          <li><a href="/heritage/" class="nav-link">Heritage</a></li>
+        </ul>
+      </nav>
+
+      <nav class="mobile-nav" id="mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
+        <ul class="mobile-nav-list">
+          <li><a href="/#originals" class="nav-link">Originals</a></li>
+          <li><a href="/#studio" class="nav-link">The Studio</a></li>
+          <li><a href="/heritage/" class="nav-link">Heritage</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- ============================================================
+         Main content
+         ============================================================ -->
+    <main>
+      <div class="home-grid">
+
+        <!-- ---- Left column: intro + slideshow ---- -->
+        <div class="home-grid__left">
+
+          <section class="brand-intro" aria-label="Heritage introduction">
+            <span class="location-tag">Tulsa, Oklahoma</span>
+            <h1 class="hero-headline">Old Meets New</h1>
+            <p class="hero-description">Placeholder description text. Replace with final copy about Dickson Antiquities and Gachafruit Studio sharing a workshop and a vision.</p>
+          </section>
+
+          <!-- Slideshow placeholder — JS-powered carousel to be added later -->
+          <div class="slideshow-placeholder" aria-label="Heritage artifact slideshow (placeholder)">
+            <div class="slideshow-placeholder__frame">
+              <div class="img-placeholder" role="img" aria-label="Slideshow image placeholder"></div>
+              <p class="slideshow-placeholder__caption">Circa 1400: Placeholder artifact caption</p>
+            </div>
+            <div class="slideshow-dots" aria-hidden="true">
+              <span class="slideshow-dot slideshow-dot--active"></span>
+              <span class="slideshow-dot"></span>
+              <span class="slideshow-dot"></span>
+              <span class="slideshow-dot"></span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ---- Right column: hero image + CTA ---- -->
+        <div class="home-grid__right">
+
+          <div class="hero-image-wrapper">
+            <div class="img-placeholder" role="img" aria-label="Heritage workshop hero image placeholder"></div>
+          </div>
+
+          <section aria-labelledby="heritage-cta-heading">
+            <h2 class="heritage-cta__heading" id="heritage-cta-heading">Continue the Journey</h2>
+            <p class="heritage-cta__body">Curious about the artifacts that started it all? Explore the full collection at our sister site.</p>
+            <a
+              href="https://www.dicksonantiquities.com"
+              class="btn btn--outline heritage-cta__btn"
+              target="_blank"
+              rel="noopener noreferrer"
+            >[ Visit DicksonAntiquities.com ]</a>
+          </section>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ============================================================
+         Footer
+         ============================================================ -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-copy">
+          &copy; 2026 <strong>Gachafruit</strong> &middot; Tulsa, Oklahoma
+        </p>
+
+        <nav class="footer-links" aria-label="Marketplace links">
+          <a href="https://www.etsy.com/shop/Gachafruit" class="footer-link" target="_blank" rel="noopener noreferrer">Etsy</a>
+          <a href="#" class="footer-link">Amazon</a>
+        </nav>
+
+        <div class="footer-right">
+          <nav class="footer-social" aria-label="Social links">
+            <a href="https://www.instagram.com/gachafruitstudio" class="footer-social__link" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.youtube.com/@GachafruitStudio" class="footer-social__link" target="_blank" rel="noopener noreferrer">YouTube</a>
+          </nav>
+
+          <form class="footer-newsletter" aria-label="Newsletter signup">
+            <label for="newsletter-email" class="sr-only">Email address</label>
+            <input type="email" id="newsletter-email" name="email" class="newsletter-input" placeholder="Email address" autocomplete="email" />
+            <button type="submit" class="newsletter-btn">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../js/components/header.js" defer></script>
+  </body>
+</html>
