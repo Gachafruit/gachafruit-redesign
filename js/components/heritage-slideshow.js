@@ -32,7 +32,10 @@
   }
 
   function resolveImage(item) {
-    return item.imageMode === 'remote' ? item.remoteImage : item.localImage;
+    if (item.imageMode === 'remote') return item.remoteImage;
+    const p = item.localImage || '';
+    // Ensure local paths are root-relative so they resolve correctly from any subpage
+    return p.startsWith('/') ? p : '/' + p;
   }
 
   function buildSlideshow(wrapper, items) {
@@ -47,6 +50,7 @@
     const img = document.createElement('img');
     img.className = 'slideshow-img';
     img.alt       = items[0].alt || '';
+    img.onerror   = () => { img.onerror = null; img.src = ''; };
     img.src       = resolveImage(items[0]);
     frame.appendChild(img);
 

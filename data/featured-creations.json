@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-30T23:35:30.441Z",
+  "updatedAt": "2026-04-03T22:26:18.856Z",
   "featuredCreations": {
     "tiles": [
       {
@@ -49,10 +49,9 @@
     ]
   },
   "exploreAll": {
-    "mode": "api-with-fallback",
-    "apiUrl": "https://gachafruit-etsy-listings.andickso21.workers.dev",
+    "mode": "manual",
     "homepageVisibleCount": 8,
-    "viewAllUrl": "/explore-all/",
+    "viewAllUrl": "",
     "slotCount": 12,
     "manualTiles": [
       {
@@ -185,6 +184,90 @@
         "url": "",
         "imageMode": "local",
         "localImage": "assets/images/explore-all/E12.jpg",
+        "remoteImage": ""
+      }
+    ]
+  },
+  "heritage": {
+    "items": [
+      {
+        "id": "H1",
+        "enabled": true,
+        "alt": "Image of a golden antique Buddhist offering vessel",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H1.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "H2",
+        "enabled": true,
+        "alt": "Imagine of a brass African figure sitting on a ceremonial seat",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H2.png",
+        "remoteImage": ""
+      },
+      {
+        "id": "H3",
+        "enabled": true,
+        "alt": "Image of a Victorian-era doorknocker featuring Cerberus",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H3.png",
+        "remoteImage": ""
+      },
+      {
+        "id": "H4",
+        "enabled": true,
+        "alt": "Image of a Japanese Usubata planter",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H4.png",
+        "remoteImage": ""
+      },
+      {
+        "id": "H5",
+        "enabled": true,
+        "alt": "",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H5.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "H6",
+        "enabled": true,
+        "alt": "",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H6.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "H7",
+        "enabled": true,
+        "alt": "",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H7.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "H8",
+        "enabled": true,
+        "alt": "",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H8.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "H9",
+        "enabled": true,
+        "alt": "",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H9.jpg",
+        "remoteImage": ""
+      },
+      {
+        "id": "H10",
+        "enabled": true,
+        "alt": "",
+        "imageMode": "local",
+        "localImage": "assets/images/heritage/gallery/H10.jpg",
         "remoteImage": ""
       }
     ]
