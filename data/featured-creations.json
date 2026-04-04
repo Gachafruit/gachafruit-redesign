@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-03T22:26:18.856Z",
+  "updatedAt": "2026-04-04T02:51:24.243Z",
   "featuredCreations": {
     "tiles": [
       {
@@ -193,7 +193,7 @@
       {
         "id": "H1",
         "enabled": true,
-        "alt": "Image of a golden antique Buddhist offering vessel",
+        "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H1.jpg",
         "remoteImage": ""
@@ -201,7 +201,7 @@
       {
         "id": "H2",
         "enabled": true,
-        "alt": "Imagine of a brass African figure sitting on a ceremonial seat",
+        "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H2.png",
         "remoteImage": ""
@@ -209,7 +209,7 @@
       {
         "id": "H3",
         "enabled": true,
-        "alt": "Image of a Victorian-era doorknocker featuring Cerberus",
+        "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H3.png",
         "remoteImage": ""
@@ -224,7 +224,7 @@
       },
       {
         "id": "H5",
-        "enabled": true,
+        "enabled": false,
         "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H5.jpg",
@@ -232,7 +232,7 @@
       },
       {
         "id": "H6",
-        "enabled": true,
+        "enabled": false,
         "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H6.jpg",
@@ -240,7 +240,7 @@
       },
       {
         "id": "H7",
-        "enabled": true,
+        "enabled": false,
         "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H7.jpg",
@@ -248,7 +248,7 @@
       },
       {
         "id": "H8",
-        "enabled": true,
+        "enabled": false,
         "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H8.jpg",
@@ -256,7 +256,7 @@
       },
       {
         "id": "H9",
-        "enabled": true,
+        "enabled": false,
         "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H9.jpg",
@@ -264,7 +264,7 @@
       },
       {
         "id": "H10",
-        "enabled": true,
+        "enabled": false,
         "alt": "",
         "imageMode": "local",
         "localImage": "assets/images/heritage/gallery/H10.jpg",
