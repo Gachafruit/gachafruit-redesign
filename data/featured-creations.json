@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-04T05:35:25.529Z",
+  "updatedAt": "2026-04-04T05:49:30.887Z",
   "featuredCreations": {
     "tiles": [
       {
@@ -50,7 +50,7 @@
   },
   "exploreAll": {
     "mode": "api-with-fallback",
-    "apiUrl": "gachafruit-etsy-listings.andickso21.workers.dev",
+    "apiUrl": "https://gachafruit-etsy-listings.andickso21.workers.dev/",
     "homepageVisibleCount": 8,
     "viewAllUrl": "",
     "slotCount": 12,
