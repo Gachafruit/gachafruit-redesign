@@ -25,6 +25,7 @@
 
   const exploreSettings = {
     mode:                 'manual',
+    apiUrl:               '',
     homepageVisibleCount: 8,
     viewAllUrl:           '',
     slotCount:            EXPLORE_DEFAULT,
@@ -641,6 +642,13 @@
       editor.querySelector('.local-preview-name').textContent = tile._file ? tile._file.name : `${id}.${tile._localExt}`;
       editor.querySelector('.local-preview-path').textContent = tile.localImage;
       editor.querySelector('.local-preview').classList.add('show');
+    } else if (tile.imageMode === 'local' && tile.localImage) {
+      // No uploaded file in this session, but a path is stored (e.g. imported from JSON).
+      // Show the path so the user can confirm what is stored without needing to re-upload.
+      editor.querySelector('.local-preview-thumb').src        = '';
+      editor.querySelector('.local-preview-name').textContent = 'Linked (no preview — file not uploaded this session)';
+      editor.querySelector('.local-preview-path').textContent = tile.localImage;
+      editor.querySelector('.local-preview').classList.add('show');
     } else {
       editor.querySelector('.local-preview').classList.remove('show');
     }
@@ -671,6 +679,13 @@
     tile.imageMode   = src.imageMode   ?? 'local';
     tile.localImage  = src.localImage  ?? `${tile._imageDir}/${tile.id}.jpg`;
     tile.remoteImage = src.remoteImage ?? '';
+
+    // Derive _localExt from the actual localImage path so that
+    // "Remove" resets to the correct extension (e.g. .png for H4).
+    if (tile.localImage) {
+      const ext = tile.localImage.split('.').pop().toLowerCase();
+      if (ext) tile._localExt = ext;
+    }
   }
 
   // ===========================================================
@@ -762,6 +777,11 @@
       }
     });
 
+    document.getElementById('apiUrl').addEventListener('input', e => {
+      exploreSettings.apiUrl = e.target.value.trim();
+      saveDraft();
+    });
+
     document.getElementById('viewAllUrl').addEventListener('input', e => {
       exploreSettings.viewAllUrl = e.target.value.trim();
       saveDraft();
@@ -779,9 +799,10 @@
     });
     document.getElementById('homepageVisibleCount').value = exploreSettings.homepageVisibleCount;
     document.getElementById('visibleCountDisplay').textContent = exploreSettings.homepageVisibleCount;
+    document.getElementById('apiUrl').value     = exploreSettings.apiUrl;
     document.getElementById('viewAllUrl').value = exploreSettings.viewAllUrl;
     document.getElementById('slotCount').value  = exploreSettings.slotCount;
-    document.getElementById('apiModeNote').classList.toggle('hidden', exploreSettings.mode !== 'api-with-fallback');
+    document.getElementById('apiModeSettings').classList.toggle('hidden', exploreSettings.mode !== 'api-with-fallback');
   }
 
   // ===========================================================
@@ -834,6 +855,7 @@
 
     if (eaData) {
       if (eaData.mode                 != null) exploreSettings.mode                 = eaData.mode;
+      if (eaData.apiUrl               != null) exploreSettings.apiUrl               = eaData.apiUrl;
       if (eaData.homepageVisibleCount != null) exploreSettings.homepageVisibleCount = eaData.homepageVisibleCount;
       if (eaData.viewAllUrl           != null) exploreSettings.viewAllUrl           = eaData.viewAllUrl;
 
@@ -1079,7 +1101,7 @@
     });
 
     Object.assign(exploreSettings, {
-      mode: 'manual', homepageVisibleCount: 8, viewAllUrl: '', slotCount: EXPLORE_DEFAULT,
+      mode: 'manual', apiUrl: '', homepageVisibleCount: 8, viewAllUrl: '', slotCount: EXPLORE_DEFAULT,
     });
     exploreTiles.length = 0;
     for (let i = 1; i <= EXPLORE_DEFAULT; i++) {
@@ -1108,6 +1130,7 @@
       },
       exploreAll: {
         mode:                 exploreSettings.mode,
+        apiUrl:               exploreSettings.apiUrl,
         homepageVisibleCount: exploreSettings.homepageVisibleCount,
         viewAllUrl:           exploreSettings.viewAllUrl,
         slotCount:            exploreSettings.slotCount,

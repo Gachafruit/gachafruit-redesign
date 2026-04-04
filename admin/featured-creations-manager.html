@@ -74,9 +74,13 @@
             <button class="source-mode-tab mode-tab active" data-mode="manual">Manual</button>
             <button class="source-mode-tab mode-tab"        data-mode="api-with-fallback">API + Fallback</button>
           </div>
-          <p class="api-mode-note hidden" id="apiModeNote">
-            Manual tiles serve as fallback when the API is unavailable. Worker integration is not yet active.
-          </p>
+          <div class="settings-group settings-group-wide hidden" id="apiModeSettings">
+            <div class="settings-label">Worker API URL</div>
+            <input type="url" id="apiUrl" class="settings-input" placeholder="https://your-worker.workers.dev/">
+            <p class="api-mode-note" id="apiModeNote">
+              Manual tiles serve as fallback when the API is unavailable.
+            </p>
+          </div>
         </div>
 
         <div class="settings-group">
