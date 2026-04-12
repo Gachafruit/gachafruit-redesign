@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Originals Manager — Gachafruit Studio</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta name="theme-color" content="#B85C38">
+  <link rel="stylesheet" href="originals-manager.css">
+</head>
+<body>
+
+  <div class="manager-wrap">
+
+    <!-- ======================================================
+         Header
+         ====================================================== -->
+    <header class="manager-header">
+      <div class="manager-logo">Gachafruit Studio</div>
+      <h1 class="manager-title">Originals Manager</h1>
+      <p class="manager-subtitle">
+        Manage the Current Project, Etsy section settings, and Free Models tiles.
+        Export JSON when ready and place it at <code>/data/originals-content.json</code>.
+      </p>
+    </header>
+
+    <!-- ======================================================
+         Toolbar
+         ====================================================== -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="importBtn" class="btn btn-secondary">
+          <span class="btn-icon">↑</span> Import JSON
+        </button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+
+        <button id="resetBtn" class="btn btn-secondary">
+          <span class="btn-icon">↺</span> Reset to Imported
+        </button>
+
+        <button id="clearBtn" class="btn btn-secondary btn-danger-hover">
+          <span class="btn-icon">×</span> Clear Draft
+        </button>
+      </div>
+
+      <div class="toolbar-group">
+        <button id="exportBtn" class="btn btn-primary">
+          <span class="btn-icon">↓</span> Export JSON
+        </button>
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar" id="statusBar" role="status" aria-live="polite"></div>
+
+    <!-- ======================================================
+         Section 1: Current Project
+         ====================================================== -->
+    <div class="manager-section">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">Current Project</h2>
+        <p class="manager-section-sub">
+          The featured editorial entry shown at the top of <strong>/originals/</strong>.
+          One project is shown at a time. Archive it when the next project begins.
+        </p>
+      </div>
+
+      <div id="projectEditorWrap">
+        <!-- Injected by originals-manager.js -->
+      </div>
+    </div>
+
+    <!-- ======================================================
+         Section 2: Etsy Section Settings
+         ====================================================== -->
+    <div class="manager-section">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">Etsy Section</h2>
+        <p class="manager-section-sub">
+          Controls the <em>Shop Our Originals</em> preview row on <strong>/originals/</strong>.
+          Listings are pulled from the same API used by the Explore All page — no separate setup needed.
+        </p>
+      </div>
+
+      <div id="etsySettingsWrap">
+        <!-- Injected by originals-manager.js -->
+      </div>
+    </div>
+
+    <!-- ======================================================
+         Section 3: Free Models
+         ====================================================== -->
+    <div class="manager-section">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">Free Models</h2>
+        <p class="manager-section-sub">
+          Manual tiles for the <em>Browse the Community Archive</em> section.
+          Each tile links to an external download (Printables, Thingiverse, etc.).
+          No price displayed — "Download" button by default.
+        </p>
+      </div>
+
+      <div class="tiles-grid" id="freeModelsTilesGrid">
+        <!-- Injected by originals-manager.js -->
+      </div>
+
+      <button class="add-tile-btn" id="addFreeModelBtn" type="button">
+        + Add Free Model Tile
+      </button>
+    </div>
+
+  </div><!-- /manager-wrap -->
+
+  <script src="originals-manager.js"></script>
+</body>
+</html>

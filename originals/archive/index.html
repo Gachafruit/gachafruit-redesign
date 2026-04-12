@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Archive — Gachafruit Studio</title>
+  <meta name="description" content="Past projects and studio experiments from Gachafruit Studio, archived in chronological order.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#B85C38">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://gachafruit.com/originals/archive/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gachafruit.com/originals/archive/">
+  <meta property="og:title" content="Project Archive — Gachafruit Studio">
+  <meta property="og:description" content="Past projects and studio experiments from Gachafruit Studio.">
+  <meta property="og:image" content="https://gachafruit.com/assets/images/gallery-hero.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Project Archive — Gachafruit Studio">
+  <meta name="twitter:description" content="Past projects and studio experiments from Gachafruit Studio.">
+  <meta name="twitter:image" content="https://gachafruit.com/assets/images/gallery-hero.png">
+
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/components/header.css">
+  <link rel="stylesheet" href="../../css/components/footer.css">
+
+  <style>
+    /* ============================================================
+       Project Archive page styles
+       ============================================================ */
+
+    /* ---- Page intro ---- */
+    .page-intro {
+      padding-block: var(--space-2xl) var(--space-xl);
+      border-bottom: 1px solid var(--color-border-soft);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: var(--space-lg);
+      transition: color var(--transition-fast);
+    }
+
+    .back-link:hover {
+      color: var(--color-accent);
+    }
+
+    .section-label {
+      display: block;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .page-intro__heading {
+      font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-4xl));
+      font-weight: var(--font-weight-black);
+      letter-spacing: -0.03em;
+      line-height: var(--line-height-tight);
+      color: var(--color-text);
+      margin-bottom: var(--space-md);
+    }
+
+    .page-intro__description {
+      font-size: var(--font-size-base);
+      color: var(--color-muted);
+      line-height: var(--line-height-base);
+      max-width: 52ch;
+    }
+
+    /* ---- Archive list ---- */
+    .archive-section {
+      padding-bottom: var(--space-3xl);
+    }
+
+    #archive-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+    }
+
+    /* ---- Archive entry ---- */
+    .archive-entry {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+      padding-bottom: var(--space-xl);
+      border-bottom: 1px solid var(--color-border-soft);
+    }
+
+    .archive-entry:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    @media (min-width: 640px) {
+      .archive-entry {
+        grid-template-columns: 240px 1fr;
+        gap: var(--space-xl);
+        align-items: start;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .archive-entry {
+        grid-template-columns: 300px 1fr;
+      }
+    }
+
+    /* Image */
+    .archive-entry__img-wrap {
+      width: 100%;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--color-surface);
+    }
+
+    .archive-entry__img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .archive-entry__img-placeholder {
+      aspect-ratio: 4 / 3;
+    }
+
+    /* Content */
+    .archive-entry__meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+
+    .archive-entry__date,
+    .archive-entry__subtitle,
+    .archive-entry__archived {
+      font-size: var(--font-size-xs);
+      color: var(--color-muted-light);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .archive-entry__subtitle {
+      color: var(--color-accent);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .archive-entry__date::after,
+    .archive-entry__subtitle::after {
+      content: '·';
+      margin-left: var(--space-sm);
+      color: var(--color-border);
+    }
+
+    .archive-entry__title {
+      font-size: clamp(var(--font-size-xl), 2vw, var(--font-size-2xl));
+      font-weight: var(--font-weight-bold);
+      letter-spacing: -0.02em;
+      line-height: var(--line-height-snug);
+      color: var(--color-text);
+      margin-bottom: var(--space-md);
+    }
+
+    .archive-entry__excerpt {
+      font-size: var(--font-size-base);
+      color: var(--color-muted);
+      line-height: var(--line-height-base);
+      max-width: 60ch;
+    }
+
+    /* ---- Empty / error state ---- */
+    .empty-state {
+      padding: var(--space-2xl);
+      text-align: center;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      color: var(--color-muted);
+      font-size: var(--font-size-sm);
+    }
+
+    @media (max-width: 768px) {
+      .page-intro {
+        padding-block: var(--space-xl) var(--space-lg);
+        margin-bottom: var(--space-xl);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================
+       Header
+       ====================================================== -->
+  <header class="site-header">
+
+    <div class="header-logo-row">
+      <a href="/" class="logo" aria-label="Gachafruit home">
+        <img src="../../assets/images/Gachafruit-Logo.png" alt="" class="logo__mark" aria-hidden="true">
+        <span class="logo__text">
+          <span class="logo__name">Gachafruit</span>
+          <span class="logo__sub">Studio</span>
+        </span>
+      </a>
+
+      <button class="hamburger"
+              aria-label="Toggle menu"
+              aria-expanded="false"
+              aria-controls="mobile-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Desktop nav -->
+    <nav class="header-nav" aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="/originals/"  class="nav-link nav-link--active">Originals</a></li>
+        <li><a href="/#studio"     class="nav-link">The Studio</a></li>
+        <li><a href="/heritage/"   class="nav-link">Heritage</a></li>
+      </ul>
+    </nav>
+
+    <!-- Mobile nav drawer -->
+    <nav class="mobile-nav" id="mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
+      <ul class="mobile-nav-list">
+        <li><a href="/originals/"  class="nav-link">Originals</a></li>
+        <li><a href="/#studio"     class="nav-link">The Studio</a></li>
+        <li><a href="/heritage/"   class="nav-link">Heritage</a></li>
+      </ul>
+    </nav>
+
+  </header>
+
+  <!-- ======================================================
+       Main
+       ====================================================== -->
+  <main>
+    <div class="inner">
+
+      <!-- Page intro -->
+      <div class="page-intro">
+        <a href="/originals/" class="back-link">← Originals</a>
+        <span class="section-label">Project Archive</span>
+        <h1 class="page-intro__heading">Past Projects</h1>
+        <p class="page-intro__description">
+          A chronological record of studio experiments and original projects.
+        </p>
+      </div>
+
+      <!-- Archive list -->
+      <section class="archive-section" aria-label="Archived projects">
+        <div id="archive-list">
+          <!-- Populated by js/components/originals-archive.js -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ======================================================
+       Footer
+       ====================================================== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+
+      <p class="footer-copy">
+        &copy; 2026 <strong>Gachafruit</strong> &middot; Tulsa, Oklahoma
+      </p>
+
+      <nav class="footer-links" aria-label="Marketplace links">
+        <a href="https://www.etsy.com/shop/Gachafruit" class="footer-link">Etsy</a>
+        <a href="#" class="footer-link">Amazon</a>
+      </nav>
+
+      <div class="footer-right">
+        <nav class="footer-social" aria-label="Social links">
+          <a href="https://www.instagram.com/gachafruitstudio" class="footer-social__link">Instagram</a>
+          <a href="https://www.youtube.com/@GachafruitStudio"  class="footer-social__link">YouTube</a>
+        </nav>
+
+        <form class="footer-newsletter" aria-label="Newsletter signup">
+          <label for="newsletter-email" class="sr-only">Email address</label>
+          <input
+            type="email"
+            id="newsletter-email"
+            name="email"
+            class="newsletter-input"
+            placeholder="Email address"
+            autocomplete="email"
+          >
+          <button type="submit" class="newsletter-btn">Sign Up</button>
+        </form>
+      </div>
+
+    </div>
+  </footer>
+
+  <script src="../../js/components/header.js" defer></script>
+  <script src="../../js/components/originals-archive.js" defer></script>
+
+</body>
+</html>

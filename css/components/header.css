@@ -118,6 +118,15 @@
   width: 100%;
 }
 
+/* Active state — permanent underline for current page */
+.nav-link--active {
+  color: var(--color-text);
+}
+
+.nav-link--active::after {
+  width: 100%;
+}
+
 /* ============================================================
    Hamburger (mobile only — positioned to right of logo row)
    ============================================================ */
