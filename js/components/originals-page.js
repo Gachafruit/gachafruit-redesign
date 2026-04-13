@@ -152,8 +152,7 @@
     var tiles = await resolveEtsyTiles(featuredData, count);
 
     if (tiles.length === 0) {
-      var section = document.getElementById('originals-etsy');
-      if (section) section.style.display = 'none';
+      track.innerHTML = '<p class="rail-empty-state">Listings coming soon — visit our <a href="https://www.etsy.com/shop/Gachafruit">Etsy shop</a> in the meantime.</p>';
       return;
     }
 
@@ -197,8 +196,7 @@
     var enabled = models.filter(function (m) { return m.enabled !== false; });
 
     if (enabled.length === 0) {
-      var section = document.getElementById('free-models');
-      if (section) section.style.display = 'none';
+      grid.innerHTML = '<p class="rail-empty-state">Free downloadable models coming soon.</p>';
       return;
     }
 

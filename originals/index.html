@@ -57,21 +57,36 @@
 
   <style>
     /* ============================================================
-       Originals page — page-specific styles
+       Originals page — split editorial layout
        ============================================================ */
 
-    /* ---- Shared section chrome ---- */
-    .originals-section {
-      padding-block: var(--space-2xl);
+    /* ============================================================
+       Page-level two-column split
+       Mobile: single column stack
+       Desktop (1024px+): Current Project left | Rail right
+       ============================================================ */
+
+    .originals-desktop-layout {
+      max-width: var(--max-width);
+      margin-inline: auto;
+      padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-2xl);
+      align-items: start;
     }
 
-    .originals-section + .originals-section {
-      border-top: 1px solid var(--color-border-soft);
+    @media (min-width: 1024px) {
+      .originals-desktop-layout {
+        grid-template-columns: 3fr 2fr;
+        gap: var(--space-3xl);
+        padding-block: var(--space-3xl);
+      }
     }
 
-    .originals-section:last-child {
-      padding-bottom: var(--space-3xl);
-    }
+    /* ============================================================
+       Shared: eyebrow label
+       ============================================================ */
 
     .section-label {
       display: block;
@@ -80,51 +95,37 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--color-accent);
-      margin-bottom: var(--space-sm);
-    }
-
-    .section-heading {
-      font-size: clamp(var(--font-size-xl), 2.5vw, var(--font-size-3xl));
-      font-weight: var(--font-weight-black);
-      letter-spacing: -0.02em;
-      color: var(--color-text);
-      margin-bottom: var(--space-xl);
+      margin-bottom: var(--space-xs);
     }
 
     /* ============================================================
-       Section 1 — Current Project
+       Left column — Current Project (editorial feature)
        ============================================================ */
 
-    /* Two-column on tablet+, stacked on mobile */
+    /* The JS builds .current-project-layout with gallery + content.
+       Override it to stack vertically — page layout handles the column split. */
     .current-project-layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
     }
 
-    @media (min-width: 768px) {
-      .current-project-layout {
-        grid-template-columns: 55fr 45fr;
-        gap: var(--space-2xl);
-        align-items: start;
-      }
-    }
-
-    /* Image gallery */
+    /* Main gallery image: wide, fills left column */
     .project-gallery__main {
       display: block;
       width: 100%;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 16 / 9;
       object-fit: cover;
       border-radius: var(--radius-lg);
       background-color: var(--color-surface);
     }
 
     .project-gallery__main.img-placeholder {
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 16 / 9;
       border-radius: var(--radius-lg);
     }
 
+    /* Thumbnail strip */
     .project-gallery__thumbs {
       display: flex;
       gap: var(--space-sm);
@@ -133,8 +134,8 @@
     }
 
     .project-gallery__thumb {
-      width: 64px;
-      height: 64px;
+      width: 72px;
+      height: 72px;
       object-fit: cover;
       border-radius: var(--radius-sm);
       border: 2px solid transparent;
@@ -150,7 +151,12 @@
       outline: none;
     }
 
-    /* Project text content */
+    /* Text content block */
+    .project-content {
+      display: flex;
+      flex-direction: column;
+    }
+
     .project-content__subtitle {
       display: block;
       font-size: var(--font-size-xs);
@@ -161,8 +167,9 @@
       margin-bottom: var(--space-sm);
     }
 
+    /* Large editorial title — constrained by left column width, not full viewport */
     .project-content__title {
-      font-size: clamp(var(--font-size-2xl), 3.5vw, var(--font-size-4xl));
+      font-size: clamp(var(--font-size-xl), 3vw, var(--font-size-4xl));
       font-weight: var(--font-weight-black);
       letter-spacing: -0.03em;
       line-height: var(--line-height-tight);
@@ -173,7 +180,7 @@
     .project-content__date {
       font-size: var(--font-size-sm);
       color: var(--color-muted-light);
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-md);
     }
 
     .project-content__body {
@@ -181,14 +188,13 @@
       color: var(--color-muted);
       line-height: var(--line-height-base);
       margin-bottom: var(--space-xl);
-      max-width: 56ch;
     }
 
     .project-content__body p + p {
       margin-top: var(--space-md);
     }
 
-    /* Archive button */
+    /* Archive link */
     .archive-link {
       display: inline-flex;
       align-items: center;
@@ -201,6 +207,7 @@
       color: var(--color-muted);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
+      align-self: flex-start;
       transition:
         color var(--transition-fast),
         border-color var(--transition-fast),
@@ -218,9 +225,9 @@
       background-color: var(--color-accent-soft);
     }
 
-    /* Placeholder (no active project) */
+    /* Placeholder — no active project */
     .project-placeholder {
-      padding: var(--space-3xl) 0 var(--space-xl);
+      padding: var(--space-xl) 0;
     }
 
     .project-placeholder > p {
@@ -230,60 +237,71 @@
     }
 
     /* ============================================================
-       Section 2 — Etsy Preview
+       Right column — Etsy + Free Models stacked
        ============================================================ */
 
-    /* Bleed to edges on mobile for the scroll rail */
-    .etsy-scroll-wrapper {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      margin-inline: calc(-1 * var(--space-lg));
-      padding-inline: var(--space-lg);
-      padding-bottom: var(--space-sm);
-    }
-
-    .etsy-scroll-wrapper::-webkit-scrollbar {
-      display: none;
-    }
-
-    .etsy-scroll-track {
+    .originals-rail {
       display: flex;
-      gap: var(--space-md);
-      width: max-content;
+      flex-direction: column;
+      gap: 0;
     }
 
-    /* Fixed card width inside the scroll rail */
-    .etsy-scroll-track .product-card {
-      width: 196px;
-      flex-shrink: 0;
+    /* Each rail section */
+    .rail-section {
+      padding-block: var(--space-xl);
     }
 
-    @media (min-width: 480px) {
-      .etsy-scroll-track .product-card { width: 220px; }
+    .rail-section + .rail-section {
+      border-top: 1px solid var(--color-border-soft);
     }
 
-    @media (min-width: 768px) {
-      .etsy-scroll-track .product-card { width: 240px; }
+    /* On mobile, add top border to visually separate rail from left column */
+    .originals-main + .originals-rail {
+      border-top: 1px solid var(--color-border-soft);
+      padding-top: var(--space-xl);
     }
 
-    .section-cta {
-      margin-top: var(--space-xl);
+    @media (min-width: 1024px) {
+      .originals-main + .originals-rail {
+        border-top: none;
+        padding-top: 0;
+      }
     }
 
-    /* Inline btn--outline (mirrors card.css) */
+    /* Rail section header: eyebrow + heading left, CTA right */
+    .rail-section__header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    .rail-section__heading {
+      font-size: clamp(var(--font-size-base), 1.5vw, var(--font-size-lg));
+      font-weight: var(--font-weight-black);
+      letter-spacing: -0.01em;
+      color: var(--color-text);
+      margin-top: var(--space-xs);
+      margin-bottom: 0;
+    }
+
+    /* Compact CTA button for rail sections */
     .btn--outline {
       display: inline-flex;
       align-items: center;
-      padding: var(--space-sm) var(--space-lg);
+      padding: var(--space-xs) var(--space-sm);
       font-size: var(--font-size-xs);
       font-weight: var(--font-weight-semibold);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
-      color: var(--color-text);
+      color: var(--color-muted);
       background: transparent;
+      white-space: nowrap;
+      flex-shrink: 0;
       transition:
         border-color var(--transition-fast),
         color var(--transition-fast),
@@ -297,36 +315,108 @@
     }
 
     /* ============================================================
-       Section 3 — Free Models
+       Etsy scroll rail
        ============================================================ */
 
-    /* Mobile-first 2-col grid */
-    .free-models-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-md);
+    /* Mobile: bleed to page edges; Desktop: contained in right column */
+    .etsy-scroll-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin-inline: calc(-1 * var(--space-lg));
+      padding-inline: var(--space-lg);
+      padding-bottom: var(--space-xs);
     }
 
-    @media (min-width: 640px) {
-      .free-models-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .etsy-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+    @media (min-width: 1024px) {
+      .etsy-scroll-wrapper {
+        margin-inline: 0;
+        padding-inline: 0;
       }
     }
+
+    .etsy-scroll-track {
+      display: flex;
+      gap: var(--space-sm);
+      width: max-content;
+    }
+
+    /* Mobile card width */
+    .etsy-scroll-track .product-card {
+      width: 176px;
+      flex-shrink: 0;
+    }
+
+    /* Desktop: narrower right column — show ~2 cards with peek */
+    @media (min-width: 1024px) {
+      .etsy-scroll-track .product-card {
+        width: 156px;
+      }
+    }
+
+    /* ============================================================
+       Free Models scroll rail (mirrors Etsy)
+       ============================================================ */
+
+    .free-models-grid {
+      display: flex;
+      gap: var(--space-sm);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin-inline: calc(-1 * var(--space-lg));
+      padding-inline: var(--space-lg);
+      padding-bottom: var(--space-xs);
+    }
+
+    .free-models-grid::-webkit-scrollbar { display: none; }
 
     @media (min-width: 1024px) {
       .free-models-grid {
-        grid-template-columns: repeat(4, 1fr);
+        margin-inline: 0;
+        padding-inline: 0;
       }
     }
 
-    /* ---- Empty / loading state ---- */
+    .free-models-grid .product-card {
+      width: 176px;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .free-models-grid .product-card {
+        width: 156px;
+      }
+    }
+
+    /* ============================================================
+       Empty / error state
+       ============================================================ */
+
     .empty-state {
-      padding: var(--space-2xl);
+      padding: var(--space-lg);
       text-align: center;
+      border-radius: var(--radius-md);
       background: var(--color-surface);
-      border-radius: var(--radius-lg);
       color: var(--color-muted);
       font-size: var(--font-size-sm);
+    }
+
+    /* Inline empty state for rail sections (Etsy, Free Models) */
+    .rail-empty-state {
+      font-size: var(--font-size-sm);
+      color: var(--color-muted-light);
+      font-style: italic;
+      margin: 0;
+      padding-block: var(--space-sm);
+    }
+
+    .rail-empty-state a {
+      color: var(--color-accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
   </style>
 </head>
@@ -381,42 +471,51 @@
        ====================================================== -->
   <main>
 
-    <!-- ---- Section 1: Current Project ---- -->
-    <section class="originals-section" aria-labelledby="current-project-label">
-      <div class="inner">
+    <div class="originals-desktop-layout">
+
+      <!-- ---- Left column: Current Project ---- -->
+      <section class="originals-main" aria-labelledby="current-project-label">
         <span class="section-label" id="current-project-label">Current Project</span>
         <div id="current-project">
           <!-- Populated by js/components/originals-page.js -->
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ---- Section 2: Etsy Preview ---- -->
-    <section class="originals-section" id="originals-etsy" aria-labelledby="etsy-heading">
-      <div class="inner">
-        <span class="section-label" id="etsy-eyebrow">GACHAFRUIT ON ETSY</span>
-        <h2 class="section-heading" id="etsy-heading">Shop Our Originals</h2>
-        <div class="etsy-scroll-wrapper">
-          <div class="etsy-scroll-track" id="etsy-scroll-track">
+      <!-- ---- Right column: Etsy + Free Models stacked ---- -->
+      <div class="originals-rail">
+
+        <!-- Etsy Preview -->
+        <section id="originals-etsy" class="rail-section" aria-labelledby="etsy-heading">
+          <div class="rail-section__header">
+            <div>
+              <span class="section-label" id="etsy-eyebrow">GACHAFRUIT ON ETSY</span>
+              <h2 class="rail-section__heading" id="etsy-heading">Shop Our Originals</h2>
+            </div>
+            <a href="/explore-all/" class="btn--outline" id="etsy-see-all">See All</a>
+          </div>
+          <div class="etsy-scroll-wrapper">
+            <div class="etsy-scroll-track" id="etsy-scroll-track">
+              <!-- Populated by js/components/originals-page.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Free Models -->
+        <section id="free-models" class="rail-section" aria-labelledby="free-models-heading">
+          <div class="rail-section__header">
+            <div>
+              <span class="section-label">FREE MODELS</span>
+              <h2 class="rail-section__heading" id="free-models-heading">Browse the Community Archive</h2>
+            </div>
+          </div>
+          <div class="free-models-grid" id="free-models-grid">
             <!-- Populated by js/components/originals-page.js -->
           </div>
-        </div>
-        <div class="section-cta">
-          <a href="/explore-all/" class="btn btn--outline" id="etsy-see-all">See All</a>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <!-- ---- Section 3: Free Models ---- -->
-    <section class="originals-section" id="free-models" aria-labelledby="free-models-heading">
-      <div class="inner">
-        <span class="section-label">FREE MODELS</span>
-        <h2 class="section-heading" id="free-models-heading">Browse the Community Archive</h2>
-        <div class="free-models-grid" id="free-models-grid">
-          <!-- Populated by js/components/originals-page.js -->
-        </div>
-      </div>
-    </section>
+      </div><!-- /originals-rail -->
+
+    </div><!-- /originals-desktop-layout -->
 
   </main>
 
