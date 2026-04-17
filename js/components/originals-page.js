@@ -223,9 +223,12 @@
   // ===========================================================
   function resolveImageSrc(img) {
     if (!img) return '';
-    return img.imageMode === 'remote'
-      ? (img.remoteImage || '')
-      : (img.localImage  || '');
+    if (img.imageMode === 'remote') return img.remoteImage || '';
+    var local = img.localImage || '';
+    // Ensure local paths are root-relative so they resolve correctly
+    // regardless of what subdirectory the page is served from.
+    if (local && local.charAt(0) !== '/') local = '/' + local;
+    return local;
   }
 
   function esc(str) {

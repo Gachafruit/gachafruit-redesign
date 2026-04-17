@@ -1,13 +1,21 @@
 {
-  "updatedAt": "2026-04-12T00:00:00.000Z",
+  "updatedAt": "2026-04-17T09:33:08.314Z",
   "currentProject": {
     "id": "project-001",
-    "title": "",
-    "subtitle": "",
-    "date": "",
-    "body": "",
-    "images": [],
-    "enabled": false
+    "title": "Our first project entry!",
+    "subtitle": "in progress",
+    "date": "4/17/2026",
+    "body": "This is an entry about the creation of our project entry system. An entry about an entry.",
+    "images": [
+      {
+        "id": "img-1",
+        "imageMode": "local",
+        "localImage": "/assets/images/originals/projects/project-001/img-1.png",
+        "remoteImage": "",
+        "alt": ""
+      }
+    ],
+    "enabled": true
   },
   "projectArchive": [],
   "etsySettings": {
@@ -16,5 +24,17 @@
     "itemCount": 6,
     "seeAllUrl": "/explore-all/"
   },
-  "freeModels": []
+  "freeModels": [
+    {
+      "id": "FM1",
+      "enabled": true,
+      "title": "LED Light Tilt Bracket, 1/4-20 Tripod Mount",
+      "alt": "Image of a tripod tilt bracket",
+      "url": "https://makerworld.com/en/models/2201166-led-light-tilt-bracket-1-4-20-tripod-mount#profileId-2391363",
+      "buttonText": "Download",
+      "imageMode": "remote",
+      "localImage": "assets/images/originals/free-models/FM1.jpg",
+      "remoteImage": "https://makerworld.bblmw.com/makerworld/model/US2e4e3584f42eb3/design/2026-01-04_bf9659f5433128.png"
+    }
+  ]
 }

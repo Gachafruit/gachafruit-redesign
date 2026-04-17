@@ -10,8 +10,8 @@
 
   // ---- Config -----------------------------------------------
   const STORAGE_KEY       = 'gachafruit_originals_draft';
-  const FREE_MODEL_IMG_DIR = 'assets/images/originals/free-models';
-  const PROJECT_IMG_DIR    = 'assets/images/originals/projects';
+  const FREE_MODEL_IMG_DIR = '/assets/images/originals/free-models';
+  const PROJECT_IMG_DIR    = '/assets/images/originals/projects';
 
   // ---- State ------------------------------------------------
   let currentProject = defaultProject();
@@ -177,11 +177,15 @@
           </button>
         </div>
 
+        <!-- Pending archive queue — populated by renderPendingArchiveQueue() -->
+        <div id="pendingArchiveQueue"></div>
+
       </div><!-- /project-editor -->
     `;
 
     renderGalleryList();
     bindProjectEditorEvents();
+    renderPendingArchiveQueue();
   }
 
   function renderGalleryList() {
@@ -333,8 +337,39 @@
       currentProject = defaultProject();
       saveDraft();
       buildProjectEditor();
-      showStatus('Project archived. Export JSON to save the archive entry.', 'success');
+      showStatus(`"${archived.title || 'Project'}" archived and queued for export.`, 'success');
     });
+  }
+
+  function renderPendingArchiveQueue() {
+    const el = document.getElementById('pendingArchiveQueue');
+    if (!el) return;
+    const queue = window._pendingArchive || [];
+    if (queue.length === 0) {
+      el.innerHTML = '';
+      return;
+    }
+    const items = queue.map(proj => {
+      const title = proj.title || 'Untitled project';
+      const date  = proj.archivedAt
+        ? new Date(proj.archivedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+        : '';
+      return `<div class="pending-queue__item">
+        <span class="pending-queue__title">${esc(title)}</span>
+        ${date ? `<span class="pending-queue__date">archived ${esc(date)}</span>` : ''}
+      </div>`;
+    }).join('');
+
+    el.innerHTML = `
+      <div class="pending-queue">
+        <div class="pending-queue__header">
+          <span class="pending-queue__label">Pending Export</span>
+          <span class="pending-queue__count">${queue.length} project${queue.length !== 1 ? 's' : ''} queued</span>
+        </div>
+        <div class="pending-queue__list">${items}</div>
+        <p class="pending-queue__note">These will be saved to the archive when you export JSON.</p>
+      </div>
+    `;
   }
 
   // ===========================================================
@@ -701,6 +736,7 @@
       buildProjectEditor();
       buildEtsySettings();
       buildFreeModelsGrid();
+      renderPendingArchiveQueue();
       showStatus('Draft cleared.', 'info');
     });
 
@@ -749,54 +785,124 @@
   // ===========================================================
   // Export
   // ===========================================================
-  function exportJSON() {
-    // Collect pending archives
-    const pendingArchives = (window._pendingArchive || []).map(a => {
-      const clean = Object.assign({}, a);
-      delete clean._archivePending;
-      delete clean._file;
-      delete clean._preview;
-      if (clean.images) {
-        clean.images = clean.images.map(img => stripImageRuntime(img));
+  async function exportJSON() {
+    try {
+      // Collect pending archives
+      const pendingArchives = (window._pendingArchive || []).map(a => {
+        const clean = Object.assign({}, a);
+        delete clean._archivePending;
+        delete clean._file;
+        delete clean._preview;
+        if (clean.images) {
+          clean.images = clean.images.map(img => stripImageRuntime(img));
+        }
+        return clean;
+      });
+
+      const existingArchive = (importedData && Array.isArray(importedData.projectArchive))
+        ? importedData.projectArchive
+        : [];
+      const mergedArchive = [...existingArchive, ...pendingArchives];
+
+      const projectClean = Object.assign({}, currentProject);
+      delete projectClean._file;
+      delete projectClean._preview;
+      projectClean.images = (projectClean.images || []).map(img => stripImageRuntime(img));
+
+      const freeModelsClean = freeModelTiles.map(tile => {
+        const t = Object.assign({}, tile);
+        delete t._file;
+        delete t._preview;
+        delete t._imageDir;
+        delete t._localExt;
+        return t;
+      });
+
+      const output = {
+        updatedAt:      new Date().toISOString(),
+        currentProject: projectClean,
+        projectArchive: mergedArchive,
+        etsySettings:   Object.assign({}, etsySettings),
+        freeModels:     freeModelsClean,
+      };
+
+      const json = JSON.stringify(output, null, 2);
+
+      // Collect any image files that were uploaded this session
+      const imageFiles = collectImageFiles();
+
+      if (imageFiles.length > 0) {
+        await exportAsZip(json, imageFiles, pendingArchives.length);
+      } else {
+        downloadFile('originals-content.json', json, 'application/json');
+        const archiveNote = pendingArchives.length > 0
+          ? ` — ${pendingArchives.length} archive entr${pendingArchives.length === 1 ? 'y' : 'ies'} included`
+          : '';
+        showStatus(`Exported originals-content.json${archiveNote}. Place it at /data/ on your server.`, 'success');
       }
-      return clean;
+
+      // Clear queue and update UI
+      window._pendingArchive = [];
+      saveDraft();
+      renderPendingArchiveQueue();
+    } catch (err) {
+      showStatus('Export failed: ' + err.message, 'error');
+    }
+  }
+
+  function collectImageFiles() {
+    const files = [];
+
+    // Current project images
+    (currentProject.images || []).forEach(img => {
+      if (img._file) {
+        files.push({ file: img._file, path: img.localImage.replace(/^\//, '') });
+      }
     });
 
-    // We can't know what's already in the JSON — the user imports it first.
-    // We'll merge pending archives with any existing archive from importedData.
-    const existingArchive = (importedData && Array.isArray(importedData.projectArchive))
-      ? importedData.projectArchive
-      : [];
-    const mergedArchive = [...existingArchive, ...pendingArchives];
-
-    const projectClean = Object.assign({}, currentProject);
-    delete projectClean._file;
-    delete projectClean._preview;
-    projectClean.images = (projectClean.images || []).map(img => stripImageRuntime(img));
-
-    const freeModelsClean = freeModelTiles.map(tile => {
-      const t = Object.assign({}, tile);
-      delete t._file;
-      delete t._preview;
-      delete t._imageDir;
-      delete t._localExt;
-      return t;
+    // Pending archive project images
+    (window._pendingArchive || []).forEach(proj => {
+      (proj.images || []).forEach(img => {
+        if (img._file) {
+          files.push({ file: img._file, path: img.localImage.replace(/^\//, '') });
+        }
+      });
     });
 
-    const output = {
-      updatedAt:      new Date().toISOString(),
-      currentProject: projectClean,
-      projectArchive: mergedArchive,
-      etsySettings:   Object.assign({}, etsySettings),
-      freeModels:     freeModelsClean,
-    };
+    // Free model images
+    freeModelTiles.forEach(tile => {
+      if (tile._file) {
+        files.push({ file: tile._file, path: tile.localImage.replace(/^\//, '') });
+      }
+    });
 
-    const json = JSON.stringify(output, null, 2);
-    downloadFile('originals-content.json', json, 'application/json');
+    return files;
+  }
 
-    // Clear pending archive queue after successful export
-    window._pendingArchive = [];
-    showStatus('Exported originals-content.json. Place it in /data/ on your server.', 'success');
+  async function exportAsZip(json, imageFiles, archivedCount) {
+    if (typeof JSZip === 'undefined') {
+      // JSZip failed to load — fall back to JSON-only
+      downloadFile('originals-content.json', json, 'application/json');
+      showStatus('Exported JSON only (JSZip unavailable). Place image files manually.', 'info');
+      return;
+    }
+
+    const zip = new JSZip();
+    zip.file('data/originals-content.json', json);
+    for (const { file, path } of imageFiles) {
+      zip.file(path, file);
+    }
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    downloadFile('originals-export.zip', blob, 'application/zip');
+
+    const archiveNote = archivedCount > 0
+      ? ` — ${archivedCount} archive entr${archivedCount === 1 ? 'y' : 'ies'} included`
+      : '';
+    showStatus(
+      `Exported originals-export.zip with ${imageFiles.length} image${imageFiles.length !== 1 ? 's' : ''}${archiveNote}. Extract at your repository root.`,
+      'success'
+    );
   }
 
   function stripImageRuntime(img) {
@@ -808,7 +914,7 @@
   }
 
   function downloadFile(filename, content, mime) {
-    const blob = new Blob([content], { type: mime });
+    const blob = content instanceof Blob ? content : new Blob([content], { type: mime });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
@@ -836,12 +942,25 @@
         return p;
       })(),
       etsySettings: Object.assign({}, etsySettings),
-      freeModels:   freeModelTiles.map(t => {
+      freeModels: freeModelTiles.map(t => {
         const c = Object.assign({}, t);
         delete c._file;
         delete c._imageDir;
         delete c._localExt;
         return c;
+      }),
+      // Persist pending archive queue so it survives page refresh.
+      // _file blobs can't be serialised — only the metadata is kept.
+      // Images uploaded before a refresh must be placed manually.
+      pendingArchive: (window._pendingArchive || []).map(proj => {
+        const p = Object.assign({}, proj);
+        delete p._file;
+        p.images = (p.images || []).map(img => {
+          const i = Object.assign({}, img);
+          delete i._file;
+          return i;
+        });
+        return p;
       }),
     };
     try {
@@ -868,6 +987,10 @@
           m,
           { _file: null, _imageDir: FREE_MODEL_IMG_DIR }
         ));
+      }
+      // Restore pending archive queue (note: _file refs are gone after refresh)
+      if (Array.isArray(draft.pendingArchive)) {
+        window._pendingArchive = draft.pendingArchive;
       }
 
       buildProjectEditor();

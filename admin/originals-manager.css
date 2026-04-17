@@ -799,6 +799,66 @@ input[type="number"].settings-input { width: 80px; }
   color: var(--muted-light);
 }
 
+/* ---- Pending archive queue ---- */
+.pending-queue {
+  padding: 0.875rem 1.25rem;
+  background: var(--success-bg);
+  border-top: 1px solid var(--success-border);
+}
+
+.pending-queue__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.pending-queue__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--success-text);
+}
+
+.pending-queue__count {
+  font-size: 0.7rem;
+  color: var(--success-text);
+  opacity: 0.75;
+}
+
+.pending-queue__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.pending-queue__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.pending-queue__title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--success-text);
+}
+
+.pending-queue__date {
+  font-size: 0.7rem;
+  color: var(--success-text);
+  opacity: 0.7;
+}
+
+.pending-queue__note {
+  font-size: 0.72rem;
+  color: var(--success-text);
+  opacity: 0.8;
+  font-style: italic;
+}
+
 /* ---- Archive block ---- */
 .archive-block {
   padding: 1rem 1.25rem;
