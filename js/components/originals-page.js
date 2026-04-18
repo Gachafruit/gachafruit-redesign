@@ -66,57 +66,65 @@
       ? '<p class="project-content__date">' + esc(project.date) + '</p>'
       : '';
 
+    // Layout order: text → gallery → archive link
     container.innerHTML =
       '<div class="current-project-layout">'
-      + '<div class="project-gallery">' + galleryHtml + '</div>'
       + '<div class="project-content">'
       +   subtitleHtml
       +   '<h1 class="project-content__title">' + esc(project.title) + '</h1>'
       +   dateHtml
       +   '<div class="project-content__body">' + bodyHtml + '</div>'
-      +   '<a href="/originals/archive/" class="archive-link">View Archive</a>'
       + '</div>'
+      + '<div class="project-gallery">' + galleryHtml + '</div>'
+      + '<a href="/originals/archive/" class="archive-link">View Archive</a>'
       + '</div>';
-
-    // Bind thumbnail gallery interaction
-    if (images.length > 1) {
-      var mainImg = container.querySelector('.project-gallery__main');
-      container.querySelectorAll('.project-gallery__thumb').forEach(function (thumb) {
-        thumb.addEventListener('click', function () {
-          if (mainImg) mainImg.src = thumb.dataset.src;
-          container.querySelectorAll('.project-gallery__thumb').forEach(function (t) {
-            t.classList.toggle('project-gallery__thumb--active', t === thumb);
-          });
-        });
-      });
-    }
   }
 
+  // Builds the gallery mosaic HTML based on image count:
+  //   0        → placeholder
+  //   1        → solo wide image
+  //   2        → pair (side by side)
+  //   3–5      → editorial (1 large left + up to 4 in grid right)
   function buildGalleryHtml(images) {
-    if (!images || images.length === 0) {
-      return '<div class="project-gallery__main img-placeholder" role="img" aria-label="Project image"></div>';
+    var valid = (images || []).filter(function (img) { return resolveImageSrc(img); });
+
+    if (valid.length === 0) {
+      return '<div class="gallery-solo"><div class="gallery-placeholder" role="img" aria-label="Project image"></div></div>';
     }
 
-    var first   = images[0];
-    var mainSrc = resolveImageSrc(first);
+    if (valid.length === 1) {
+      return '<div class="gallery-solo">'
+        + '<img class="gallery-img" src="' + esc(resolveImageSrc(valid[0])) + '" alt="' + esc(valid[0].alt || '') + '" loading="lazy">'
+        + '</div>';
+    }
 
-    var mainHtml = mainSrc
-      ? '<img class="project-gallery__main" src="' + esc(mainSrc) + '" alt="' + esc(first.alt || '') + '" id="gallery-main" loading="lazy">'
-      : '<div class="project-gallery__main img-placeholder" role="img" aria-label="Project image"></div>';
+    if (valid.length === 2) {
+      return '<div class="gallery-pair">'
+        + valid.map(function (img) {
+            return '<img class="gallery-img" src="' + esc(resolveImageSrc(img)) + '" alt="' + esc(img.alt || '') + '" loading="lazy">';
+          }).join('')
+        + '</div>';
+    }
 
-    if (images.length <= 1) return mainHtml;
+    // 3+ images: editorial layout
+    var primary   = valid[0];
+    var secondary = valid.slice(1, 5); // up to 4 secondary images
 
-    var thumbsHtml = images.map(function (img, i) {
-      var src = resolveImageSrc(img);
-      if (!src) return '';
-      return '<img class="project-gallery__thumb'
-        + (i === 0 ? ' project-gallery__thumb--active' : '')
-        + '" src="' + esc(src) + '" alt="' + esc(img.alt || 'Project image ' + (i + 1)) + '"'
-        + ' data-src="' + esc(src) + '" tabindex="0" role="button"'
-        + ' aria-label="View image ' + (i + 1) + '">';
+    var primaryHtml = '<img class="gallery-img" src="' + esc(resolveImageSrc(primary)) + '" alt="' + esc(primary.alt || '') + '" loading="lazy">';
+
+    var secondaryHtml = secondary.map(function (img) {
+      return '<img class="gallery-img" src="' + esc(resolveImageSrc(img)) + '" alt="' + esc(img.alt || '') + '" loading="lazy">';
     }).join('');
 
-    return mainHtml + '<div class="project-gallery__thumbs">' + thumbsHtml + '</div>';
+    // Use single-column secondary for 1–2 secondary images so they stack tall
+    var secondaryClass = secondary.length <= 2
+      ? 'gallery-secondary gallery-secondary--col1'
+      : 'gallery-secondary';
+
+    return '<div class="gallery-editorial">'
+      + '<div class="gallery-primary">' + primaryHtml + '</div>'
+      + '<div class="' + secondaryClass + '">' + secondaryHtml + '</div>'
+      + '</div>';
   }
 
   function formatBody(text) {
