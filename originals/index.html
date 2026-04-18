@@ -244,6 +244,7 @@
       display: flex;
       flex-direction: column;
       gap: 0;
+      min-width: 0; /* critical: lets the grid column stay within its fr fraction */
     }
 
     /* Each rail section */
@@ -331,9 +332,12 @@
     .etsy-scroll-wrapper::-webkit-scrollbar { display: none; }
 
     @media (min-width: 1024px) {
+      /* Desktop: clip scroll, let JS carousel handle pagination */
       .etsy-scroll-wrapper {
+        overflow: hidden;
         margin-inline: 0;
         padding-inline: 0;
+        padding-bottom: 0;
       }
     }
 
@@ -349,10 +353,15 @@
       flex-shrink: 0;
     }
 
-    /* Desktop: narrower right column — show ~2 cards with peek */
+    /* Desktop: 2-col grid — cards fill the rail width, JS paginates in groups of 4 */
     @media (min-width: 1024px) {
+      .etsy-scroll-track {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+      }
       .etsy-scroll-track .product-card {
-        width: 156px;
+        width: 100%;
       }
     }
 
@@ -374,9 +383,14 @@
     .free-models-grid::-webkit-scrollbar { display: none; }
 
     @media (min-width: 1024px) {
+      /* Desktop: 2-col grid, overflow clipped, JS carousel paginates */
       .free-models-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
         margin-inline: 0;
         padding-inline: 0;
+        padding-bottom: 0;
       }
     }
 
@@ -387,8 +401,57 @@
 
     @media (min-width: 1024px) {
       .free-models-grid .product-card {
-        width: 156px;
+        width: 100%;
       }
+    }
+
+    /* ============================================================
+       Rail carousel navigation (desktop only — injected by JS)
+       ============================================================ */
+
+    .rail-nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-sm);
+    }
+
+    .rail-nav__btn {
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      line-height: 1;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--color-muted);
+      cursor: pointer;
+      transition:
+        border-color var(--transition-fast),
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+    }
+
+    .rail-nav__btn:hover:not(:disabled) {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      background-color: var(--color-accent-soft);
+    }
+
+    .rail-nav__btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .rail-nav__indicator {
+      font-size: var(--font-size-xs);
+      color: var(--color-muted-light);
+      min-width: 3ch;
+      text-align: center;
     }
 
     /* ============================================================

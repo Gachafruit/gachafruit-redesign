@@ -8,8 +8,9 @@
  *   ETSY_API_KEY   — your Etsy Open API v3 key
  *
  * Required vars (set in wrangler.toml):
- *   ETSY_SHOP_ID   — numeric Etsy shop ID
- *   ALLOWED_ORIGIN — exact origin allowed for CORS, e.g. https://gachafruit.com
+ *   ETSY_SHOP_ID    — numeric Etsy shop ID
+ *   ALLOWED_ORIGINS — comma-separated list of allowed origins, e.g.:
+ *                     "https://gachafruit.com,http://localhost:5500"
  *
  * Response shape:
  *   { source: "etsy-api", fetchedAt: "<ISO>", tiles: [ ...TileObject ] }
@@ -33,10 +34,10 @@ const CACHE_TTL_SECONDS  = 1800;  // 30 minutes
 export default {
   async fetch(request, env, ctx) {
     if (request.method === 'OPTIONS') {
-      return corsPreflightResponse(env);
+      return corsPreflightResponse(request, env);
     }
     if (request.method !== 'GET') {
-      return errorResponse(405, 'Method not allowed', env);
+      return errorResponse(405, 'Method not allowed', request, env);
     }
 
     const originError = checkOrigin(request, env);
@@ -54,17 +55,17 @@ export default {
     }
 
     if (!env.ETSY_API_KEY) {
-      return errorResponse(500, 'Worker is missing ETSY_API_KEY secret', env);
+      return errorResponse(500, 'Worker is missing ETSY_API_KEY secret', request, env);
     }
     if (!env.ETSY_SHOP_ID) {
-      return errorResponse(500, 'Worker is missing ETSY_SHOP_ID variable', env);
+      return errorResponse(500, 'Worker is missing ETSY_SHOP_ID variable', request, env);
     }
 
     let tiles;
     try {
       tiles = await fetchAllListings(env.ETSY_SHOP_ID, env.ETSY_API_KEY);
     } catch (err) {
-      return errorResponse(502, 'Failed to fetch listings from Etsy: ' + err.message, env);
+      return errorResponse(502, 'Failed to fetch listings from Etsy: ' + err.message, request, env);
     }
 
     const payload = JSON.stringify({
@@ -216,12 +217,26 @@ function formatPrice(price) {
 
 // ── CORS helpers ─────────────────────────────────────────────────────────────
 
-function checkOrigin(request, env) {
-  const allowedOrigin = (env.ALLOWED_ORIGIN || '').trim();
-  if (!allowedOrigin || allowedOrigin === '*') return null;
+/**
+ * Resolves the correct Access-Control-Allow-Origin value for a given request.
+ *
+ * Reads ALLOWED_ORIGINS (comma-separated list) from env, falling back to the
+ * legacy ALLOWED_ORIGIN single-value key. If the incoming Origin header matches
+ * one of the allowed values, that exact origin is returned so the browser sees
+ * a precise echo rather than a wildcard. Returns null if no match is found.
+ */
+function resolveAllowedOrigin(request, env) {
+  const raw = (env.ALLOWED_ORIGINS || env.ALLOWED_ORIGIN || '').trim();
+  if (!raw || raw === '*') return '*';
 
   const requestOrigin = request.headers.get('Origin') || '';
-  if (requestOrigin !== allowedOrigin) {
+  const allowed = raw.split(',').map(s => s.trim()).filter(Boolean);
+  return allowed.includes(requestOrigin) ? requestOrigin : null;
+}
+
+function checkOrigin(request, env) {
+  const origin = resolveAllowedOrigin(request, env);
+  if (origin === null) {
     return new Response(JSON.stringify({ error: 'Origin not allowed' }), {
       status: 403,
       headers: { 'Content-Type': 'application/json' },
@@ -231,32 +246,32 @@ function checkOrigin(request, env) {
 }
 
 function addCorsHeaders(headers, request, env) {
-  const allowedOrigin  = (env.ALLOWED_ORIGIN || '').trim();
-  const requestOrigin  = request.headers.get('Origin') || '';
-  const origin = (!allowedOrigin || allowedOrigin === '*')
-    ? requestOrigin || '*'
-    : allowedOrigin;
-
-  headers.set('Access-Control-Allow-Origin',  origin);
+  const origin = resolveAllowedOrigin(request, env);
+  headers.set('Access-Control-Allow-Origin',  origin || 'null');
   headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
   headers.set('Access-Control-Allow-Headers', 'Content-Type');
   headers.set('Vary', 'Origin');
 }
 
-function corsPreflightResponse(env) {
+function corsPreflightResponse(request, env) {
+  const origin = resolveAllowedOrigin(request, env);
   return new Response(null, {
     status: 204,
     headers: new Headers({
-      'Access-Control-Allow-Origin':  env.ALLOWED_ORIGIN || '*',
+      'Access-Control-Allow-Origin':  origin || 'null',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Max-Age':       '86400',
+      'Vary':                         'Origin',
     }),
   });
 }
 
-function errorResponse(status, message, env) {
+function errorResponse(status, message, request, env) {
   const headers = new Headers({ 'Content-Type': 'application/json' });
-  if (env) headers.set('Access-Control-Allow-Origin', env.ALLOWED_ORIGIN || '*');
+  if (request && env) {
+    const origin = resolveAllowedOrigin(request, env);
+    if (origin) headers.set('Access-Control-Allow-Origin', origin);
+  }
   return new Response(JSON.stringify({ error: message }), { status, headers });
 }

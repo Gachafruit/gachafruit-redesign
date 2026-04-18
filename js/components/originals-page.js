@@ -160,6 +160,8 @@
     tiles.forEach(function (tile) {
       track.appendChild(GachafruitCards.buildCard(tile, { variant: 'sm', btnText: 'View' }));
     });
+
+    initRailCarousel(document.getElementById('originals-etsy'), track, 4);
   }
 
   async function resolveEtsyTiles(featuredData, count) {
@@ -216,6 +218,73 @@
         btnText: model.buttonText || 'Download'
       }));
     });
+
+    initRailCarousel(document.getElementById('free-models'), grid, 4);
+  }
+
+  // ===========================================================
+  // Rail carousel (desktop only)
+  // ===========================================================
+
+  // On desktop, clamp each rail to `tilesPerPage` visible cards and inject
+  // prev/next arrow controls so extra tiles don't push the left column wider.
+  // On mobile the existing overflow-x scroll is preserved (function is a no-op).
+  function initRailCarousel(sectionEl, trackEl, tilesPerPage) {
+    if (!sectionEl || !trackEl) return;
+    if (!window.matchMedia('(min-width: 1024px)').matches) return;
+
+    // Only count actual product cards, not empty-state paragraphs
+    var items = Array.from(trackEl.children).filter(function (el) {
+      return el.classList.contains('product-card');
+    });
+
+    if (items.length <= tilesPerPage) return; // fits on one page — no controls needed
+
+    var page       = 0;
+    var totalPages = Math.ceil(items.length / tilesPerPage);
+
+    var prevBtn = document.createElement('button');
+    prevBtn.type = 'button';
+    prevBtn.className = 'rail-nav__btn';
+    prevBtn.setAttribute('aria-label', 'Previous');
+    prevBtn.textContent = '←';
+
+    var indicator = document.createElement('span');
+    indicator.className = 'rail-nav__indicator';
+
+    var nextBtn = document.createElement('button');
+    nextBtn.type = 'button';
+    nextBtn.className = 'rail-nav__btn';
+    nextBtn.setAttribute('aria-label', 'Next');
+    nextBtn.textContent = '→';
+
+    var nav = document.createElement('div');
+    nav.className = 'rail-nav';
+    nav.appendChild(prevBtn);
+    nav.appendChild(indicator);
+    nav.appendChild(nextBtn);
+
+    // Insert between the section header and the content wrapper
+    var header = sectionEl.querySelector('.rail-section__header');
+    if (header && header.nextSibling) {
+      sectionEl.insertBefore(nav, header.nextSibling);
+    } else {
+      sectionEl.appendChild(nav);
+    }
+
+    function showPage() {
+      items.forEach(function (item, i) {
+        item.hidden = i < page * tilesPerPage || i >= (page + 1) * tilesPerPage;
+      });
+      prevBtn.disabled = page === 0;
+      nextBtn.disabled = page >= totalPages - 1;
+      indicator.textContent = (page + 1) + ' / ' + totalPages;
+    }
+
+    prevBtn.addEventListener('click', function () { if (page > 0) { page--; showPage(); } });
+    nextBtn.addEventListener('click', function () { if (page < totalPages - 1) { page++; showPage(); } });
+
+    showPage();
   }
 
   // ===========================================================

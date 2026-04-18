@@ -7,12 +7,14 @@ compatibility_date = "2024-09-23"
 #   To find it: GET https://openapi.etsy.com/v3/application/shops?shop_name=Gachafruit
 #   (requires x-api-key header) — copy the `shop_id` field from the response.
 #
-# ALLOWED_ORIGIN: The exact origin of your Cloudflare Pages site.
-#   Requests from other origins will be rejected with 403.
-#   Set to "*" only for development — never in production.
+# ALLOWED_ORIGINS: Comma-separated list of origins permitted to call this Worker.
+#   The incoming Origin header must exactly match one of these values.
+#   The Worker echoes back only the matched origin — never a wildcard.
+#   To add a local preview origin, append it to the list (no trailing spaces).
+#   Example:  "https://gachafruit.com,http://localhost:5500,http://192.168.1.127:5500"
 [vars]
-ETSY_SHOP_ID   = "60260227"          # fill in before deploying
-ALLOWED_ORIGIN = "https://gachafruit.com"
+ETSY_SHOP_ID    = "60260227"
+ALLOWED_ORIGINS = "https://gachafruit.com,http://localhost:5500,http://192.168.1.127:5500"
 
 # ── Secrets (never stored here — set via CLI) ──────────────────────────────────
 # After deploying, run:
