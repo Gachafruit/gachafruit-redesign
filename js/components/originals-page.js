@@ -282,7 +282,8 @@
 
     function showPage() {
       items.forEach(function (item, i) {
-        item.hidden = i < page * tilesPerPage || i >= (page + 1) * tilesPerPage;
+        var hide = i < page * tilesPerPage || i >= (page + 1) * tilesPerPage;
+        item.style.display = hide ? 'none' : '';
       });
       prevBtn.disabled = page === 0;
       nextBtn.disabled = page >= totalPages - 1;
