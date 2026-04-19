@@ -283,7 +283,7 @@
     function showPage() {
       items.forEach(function (item, i) {
         var hide = i < page * tilesPerPage || i >= (page + 1) * tilesPerPage;
-        item.style.display = hide ? 'none' : '';
+        item.classList.toggle('rail-tile--hidden', hide);
       });
       prevBtn.disabled = page === 0;
       nextBtn.disabled = page >= totalPages - 1;
