@@ -20,16 +20,26 @@
  *
  * Image fetching note:
  *   The active listings endpoint does not return image data regardless of the
- *   includes parameter. Images are fetched separately via the dedicated
- *   GET /v3/application/listings/{listing_id}/images endpoint, in batches of
- *   IMAGE_CONCURRENCY parallel requests.
+ *   includes parameter (Etsy's own issue tracker documents this endpoint's
+ *   includes=Images as unreliable, up to and including 502s). Images are
+ *   instead fetched via the batch endpoint:
+ *     GET /v3/application/listings/batch?listing_ids=<up to 100, comma-separated>&includes=Images
+ *   in chunks of IMAGE_BATCH_SIZE, fetched SEQUENTIALLY (never concurrently)
+ *   to stay well under this app's confirmed 5 QPS / 5,000 QPD Etsy quota.
+ *   The prior implementation fired 10 concurrent per-listing image requests
+ *   (IMAGE_CONCURRENCY), which alone exceeded the 5 QPS quota on every
+ *   cache-cold request — that was the root cause of images intermittently
+ *   failing to load.
  */
 
-const ETSY_API_BASE      = 'https://openapi.etsy.com/v3/application';
-const LISTINGS_PER_PAGE  = 100;
-const MAX_PAGES          = 10;    // safety cap — 1,000 listings max
-const IMAGE_CONCURRENCY  = 10;    // max parallel image requests per batch
-const CACHE_TTL_SECONDS  = 1800;  // 30 minutes
+const ETSY_API_BASE              = 'https://openapi.etsy.com/v3/application';
+const LISTINGS_PER_PAGE          = 100;
+const MAX_PAGES                  = 10;   // safety cap — 1,000 listings max
+const IMAGE_BATCH_SIZE           = 100;  // Etsy's documented max listing_ids per /listings/batch call
+const MAX_RETRY_WAIT_SECONDS     = 5;    // cap on how long we honor Retry-After before giving up
+const CACHE_TTL_SECONDS          = 1800; // 30 minutes — healthy responses only
+const DEGRADED_CACHE_TTL_SECONDS = 60;   // short TTL when the image batch fetch failed, so a
+                                          // rate-limited/broken run can't poison the cache for 30 min
 
 export default {
   async fetch(request, env, ctx) {
@@ -61,9 +71,11 @@ export default {
       return errorResponse(500, 'Worker is missing ETSY_SHOP_ID variable', request, env);
     }
 
-    let tiles;
+    let tiles, imageFetchDegraded;
     try {
-      tiles = await fetchAllListings(env.ETSY_SHOP_ID, env.ETSY_API_KEY);
+      const result = await fetchAllListings(env.ETSY_SHOP_ID, env.ETSY_API_KEY);
+      tiles = result.tiles;
+      imageFetchDegraded = result.imageFetchDegraded;
     } catch (err) {
       return errorResponse(502, 'Failed to fetch listings from Etsy: ' + err.message, request, env);
     }
@@ -74,11 +86,19 @@ export default {
       tiles,
     });
 
+    // A broad image-batch failure (rate-limited or erroring even after retry)
+    // gets a short TTL instead of the normal 30 minutes, so it self-heals in
+    // about a minute rather than serving missing images to every visitor for
+    // half an hour. Listing metadata is still valid either way — only the
+    // cache lifetime changes, never the JSON payload shape.
+    const effectiveTtl = imageFetchDegraded ? DEGRADED_CACHE_TTL_SECONDS : CACHE_TTL_SECONDS;
+
     const headers = new Headers({
       'Content-Type': 'application/json;charset=UTF-8',
-      'Cache-Control': `public, max-age=${CACHE_TTL_SECONDS}, stale-while-revalidate=${CACHE_TTL_SECONDS * 2}`,
+      'Cache-Control': `public, max-age=${effectiveTtl}, stale-while-revalidate=${effectiveTtl * 2}`,
       'X-Cache': 'MISS',
     });
+    if (imageFetchDegraded) headers.set('X-Image-Fetch-Degraded', 'true');
     addCorsHeaders(headers, request, env);
 
     const response = new Response(payload, { status: 200, headers });
@@ -92,19 +112,27 @@ export default {
 /**
  * Top-level orchestrator:
  *   1. Fetch all active listing stubs (title, price, url — no images)
- *   2. Fetch primary image for each listing in bounded parallel batches
+ *   2. Fetch images for all listings via the batch endpoint, sequentially
  *   3. Normalize each listing into a tile, merging in its image data
+ *
+ * Returns: { tiles: TileObject[], imageFetchDegraded: boolean }
+ *   imageFetchDegraded is true only when a whole image-batch request failed
+ *   (even after its retry) — never for an individual listing that genuinely
+ *   has no photos. The caller uses this to shorten the cache TTL so a broken
+ *   run doesn't get served as "successful" for a full 30 minutes.
  */
 async function fetchAllListings(shopId, apiKey) {
   const listings = await fetchListingPages(shopId, apiKey);
-  if (listings.length === 0) return [];
+  if (listings.length === 0) return { tiles: [], imageFetchDegraded: false };
 
   const listingIds = listings.map(l => l.listing_id);
-  const imageMap   = await fetchPrimaryImages(listingIds, apiKey);
+  const { imageMap, anyBatchFailed } = await fetchImagesBatched(listingIds, apiKey);
 
-  return listings.map(listing =>
+  const tiles = listings.map(listing =>
     normalizeListing(listing, imageMap[listing.listing_id] || null)
   );
+
+  return { tiles, imageFetchDegraded: anyBatchFailed };
 }
 
 /** Pages through GET /shops/{shopId}/listings/active until exhausted. */
@@ -119,9 +147,7 @@ async function fetchListingPages(shopId, apiKey) {
     url.searchParams.set('sort_on',    'created');
     url.searchParams.set('sort_order', 'desc');
 
-    const res = await fetch(url.toString(), {
-      headers: { 'x-api-key': apiKey },
-    });
+    const res = await etsyGet(url.toString(), apiKey, { endpoint: 'listings-active', page, offset });
 
     if (!res.ok) {
       const body = await res.text().catch(() => '');
@@ -140,53 +166,188 @@ async function fetchListingPages(shopId, apiKey) {
   return listings;
 }
 
-/**
- * Fetches the primary image for each listing ID.
- * Processes in batches of IMAGE_CONCURRENCY to stay within Etsy rate limits.
- *
- * Returns: { [listingId]: { url: string, alt: string } | null }
- */
-async function fetchPrimaryImages(listingIds, apiKey) {
-  const imageMap = {};
+// ── Rate-limit-aware Etsy GET helper ────────────────────────────────────────
 
-  for (let i = 0; i < listingIds.length; i += IMAGE_CONCURRENCY) {
-    const batch   = listingIds.slice(i, i + IMAGE_CONCURRENCY);
-    const results = await Promise.all(
-      batch.map(id => fetchListingPrimaryImage(id, apiKey))
-    );
-    batch.forEach((id, idx) => {
-      if (results[idx]) imageMap[id] = results[idx];
+/**
+ * Performs one GET request with the shared x-api-key header.
+ *
+ * On HTTP 429, waits for Retry-After (capped at MAX_RETRY_WAIT_SECONDS) and
+ * retries exactly once. Logs status/context for any non-2xx response — never
+ * the API key or the raw Authorization/x-api-key header value. Never throws
+ * for a bad status; the caller decides what a non-ok response means.
+ */
+async function etsyGet(url, apiKey, logContext) {
+  const res = await fetch(url, { headers: { 'x-api-key': apiKey } });
+
+  if (res.status === 429) {
+    const retryAfterHeader = res.headers.get('retry-after');
+    const waitSeconds      = clampRetryAfter(retryAfterHeader);
+    console.log(JSON.stringify({
+      msg: 'etsy-429-rate-limited',
+      ...logContext,
+      retryAfterHeader,
+      willRetryAfterSeconds: waitSeconds,
+    }));
+
+    if (waitSeconds > 0) await sleep(waitSeconds * 1000);
+    const retryRes = await fetch(url, { headers: { 'x-api-key': apiKey } });
+
+    if (!retryRes.ok) {
+      console.log(JSON.stringify({
+        msg: 'etsy-request-failed-after-retry',
+        ...logContext,
+        status: retryRes.status,
+      }));
+    }
+    return retryRes;
+  }
+
+  if (!res.ok) {
+    console.log(JSON.stringify({ msg: 'etsy-request-error', ...logContext, status: res.status }));
+  }
+
+  return res;
+}
+
+/** Clamps Etsy's Retry-After (seconds) to a sane, bounded wait. */
+function clampRetryAfter(headerValue) {
+  const parsed = parseInt(headerValue, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 1; // sane default if missing/invalid
+  return Math.min(parsed, MAX_RETRY_WAIT_SECONDS);
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// ── Image fetching (batch endpoint) ─────────────────────────────────────────
+
+/**
+ * Fetches images for all listing IDs via:
+ *   GET /v3/application/listings/batch?listing_ids=<comma-separated>&includes=Images
+ *
+ * Chunked at IMAGE_BATCH_SIZE (Etsy's documented max per call) and processed
+ * SEQUENTIALLY — not with Promise.all — so this app's confirmed 5 QPS quota
+ * is never exceeded regardless of shop size. A shop small enough to fit in
+ * one chunk costs exactly one image request total, instead of one per listing.
+ *
+ * Returns:
+ *   {
+ *     imageMap: { [listingId]: { url: string, alt: string } },
+ *     anyBatchFailed: boolean  // true if a whole chunk failed even after retry
+ *   }
+ */
+async function fetchImagesBatched(listingIds, apiKey) {
+  const imageMap = {};
+  let anyBatchFailed = false;
+
+  for (let i = 0; i < listingIds.length; i += IMAGE_BATCH_SIZE) {
+    const chunk  = listingIds.slice(i, i + IMAGE_BATCH_SIZE);
+    const result = await fetchImageBatch(chunk, apiKey);
+
+    if (!result.ok) {
+      anyBatchFailed = true;
+      continue; // listings in this chunk simply get no image (remoteImage: '')
+    }
+
+    Object.assign(imageMap, result.imageMap);
+  }
+
+  return { imageMap, anyBatchFailed };
+}
+
+/**
+ * Fetches one chunk (<= IMAGE_BATCH_SIZE ids) from the batch endpoint.
+ * Never throws — failures are reported via { ok: false } so a bad chunk
+ * degrades only the listings in that chunk, not the whole response.
+ */
+async function fetchImageBatch(listingIds, apiKey) {
+  const url = new URL(`${ETSY_API_BASE}/listings/batch`);
+  url.searchParams.set('listing_ids', listingIds.join(','));
+  url.searchParams.set('includes', 'Images');
+
+  let res;
+  try {
+    res = await etsyGet(url.toString(), apiKey, {
+      endpoint: 'listings-batch',
+      listingCount: listingIds.length,
     });
+  } catch (err) {
+    console.log(JSON.stringify({
+      msg: 'etsy-image-batch-network-error',
+      listingCount: listingIds.length,
+      error: err.message,
+    }));
+    return { ok: false };
+  }
+
+  if (!res.ok) return { ok: false };
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (err) {
+    console.log(JSON.stringify({ msg: 'etsy-image-batch-parse-error', error: err.message }));
+    return { ok: false };
+  }
+
+  return { ok: true, imageMap: parseImageBatchResponse(data) };
+}
+
+/**
+ * Defensively parses the /listings/batch response into
+ * { [listingId]: { url, alt } }.
+ *
+ * Does not assume a single rigid shape: tolerates `listing.images` (Etsy's
+ * documented field) or `listing.Images` (in case of an association-name
+ * echo), and logs — without any sensitive data, just the listing ID and the
+ * field names actually present — when a listing's shape matches neither, so
+ * a real-world deviation can be diagnosed from logs rather than silently
+ * dropped. A listing with a genuinely empty images array is not an error and
+ * is not logged; it simply gets no image.
+ */
+function parseImageBatchResponse(data) {
+  const imageMap = {};
+  const results  = Array.isArray(data && data.results) ? data.results : [];
+
+  for (const listing of results) {
+    if (!listing || listing.listing_id == null) continue;
+
+    const images = Array.isArray(listing.images)
+      ? listing.images
+      : Array.isArray(listing.Images)
+        ? listing.Images
+        : null;
+
+    if (images === null) {
+      console.log(JSON.stringify({
+        msg: 'etsy-image-batch-unexpected-shape',
+        listingId: listing.listing_id,
+        fieldsPresent: Object.keys(listing),
+      }));
+      continue;
+    }
+
+    if (images.length === 0) continue; // listing genuinely has no images
+
+    const primary = images.find(img => img && img.rank === 1) || images[0];
+    const url     = pickBestImageUrl(primary);
+    if (!url) continue;
+
+    imageMap[listing.listing_id] = { url, alt: (primary && primary.alt_text) || '' };
   }
 
   return imageMap;
 }
 
-/**
- * Fetches images for a single listing from:
- *   GET /v3/application/listings/{listing_id}/images
- *
- * Returns the rank-1 (primary) image, or null on any failure.
- * Image URL preference: url_570xN → url_fullxfull → url_170x135
- */
-async function fetchListingPrimaryImage(listingId, apiKey) {
-  try {
-    const url = `${ETSY_API_BASE}/listings/${listingId}/images`;
-    const res = await fetch(url, { headers: { 'x-api-key': apiKey } });
-    if (!res.ok) return null;
-
-    const data   = await res.json();
-    const images = data.results;
-    if (!Array.isArray(images) || images.length === 0) return null;
-
-    const primary = images.find(img => img.rank === 1) || images[0];
-    return {
-      url: primary.url_570xN || primary.url_fullxfull || primary.url_170x135 || '',
-      alt: primary.alt_text || '',
-    };
-  } catch (_) {
-    return null;
+/** Returns the best available image URL field, largest-useful first. */
+function pickBestImageUrl(image) {
+  if (!image) return '';
+  const preference = ['url_570xN', 'url_fullxfull', 'url_640x640', 'url_170x135', 'url_75x75'];
+  for (const field of preference) {
+    if (image[field]) return image[field];
   }
+  return '';
 }
 
 /**
