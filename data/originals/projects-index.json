@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "current": "2026-04-our-first-project-entry",
+  "current": "2026-05-high-octane-charge",
   "projects": [
     {
       "id": "2026-04-our-first-project-entry",
@@ -8,18 +8,18 @@
       "subtitle": "in progress",
       "date": "4/17/2026",
       "sortDate": "2026-04-17",
-      "status": "current",
+      "status": "archived",
       "image": "/assets/images/originals/projects/2026-04-our-first-project-entry/01.png"
     },
     {
       "id": "2026-05-high-octane-charge",
       "title": "HIGH-OCTANE CHARGE",
       "subtitle": "Art Deco energy for the wireless age.",
-      "date": "05/19/2026",
-      "sortDate": "2026-05-19",
-      "status": "draft",
+      "date": "08/30/2026",
+      "sortDate": "2026-08-30",
+      "status": "current",
       "image": "/assets/images/originals/projects/2026-05-high-octane-charge/01.jpg"
     }
   ],
-  "updatedAt": "2026-08-30T10:05:00.082Z"
+  "updatedAt": "2026-08-30T22:20:42.744Z"
 }
