@@ -1,0 +1,20 @@
+{
+  "id": "2026-04-our-first-project-entry",
+  "title": "Our first project entry!",
+  "subtitle": "in progress",
+  "date": "4/17/2026",
+  "sortDate": "2026-04-17",
+  "body": "This is an entry about the creation of our project entry system. An entry about an entry.",
+  "images": [
+    {
+      "src": "01.png",
+      "alt": ""
+    }
+  ],
+  "status": "current",
+  "createdAt": "2026-04-17T09:33:08.314Z",
+  "updatedAt": "2026-04-17T09:33:08.314Z",
+  "publishedAt": "2026-04-17T09:33:08.314Z",
+  "archivedAt": null,
+  "schema": 2
+}

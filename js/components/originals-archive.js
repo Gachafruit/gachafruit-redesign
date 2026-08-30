@@ -1,51 +1,101 @@
 /* ============================================================
    originals-archive.js — Project Archive page renderer
-   Fetches /data/originals-content.json and renders projectArchive[]
-   in reverse-chronological order.
+
+   v2 data model:
+     /data/originals/projects-index.json   — manifest (current + all entries)
+     /data/originals/projects/<id>.json    — one file per project
+
+   Renders every project whose status is "archived", newest first
+   (by sortDate). Falls back to the legacy projectArchive[] array in
+   /data/originals-content.json when the v2 index is unavailable.
    ============================================================ */
 
 (function () {
   'use strict';
 
-  var DATA_PATH = '/data/originals-content.json';
+  var PROJECTS_INDEX   = '/data/originals/projects-index.json';
+  var PROJECT_DIR      = '/data/originals/projects/';
+  var PROJECT_IMG_BASE = '/assets/images/originals/projects/';
+  var LEGACY_DATA      = '/data/originals-content.json';
 
   async function init() {
     var list = document.getElementById('archive-list');
     if (!list) return;
 
-    var data;
-    try {
-      var res = await fetch(DATA_PATH);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      data = await res.json();
-    } catch (_) {
+    var entries = await loadArchiveEntries();
+
+    if (entries === null) {
       list.innerHTML = '<div class="empty-state"><p>Could not load archive data.</p></div>';
       return;
     }
 
-    var archive = Array.isArray(data.projectArchive) ? data.projectArchive : [];
-
-    if (archive.length === 0) {
+    if (entries.length === 0) {
       list.innerHTML = '<div class="empty-state"><p>No archived projects yet.</p></div>';
       return;
     }
 
-    // Display newest first
-    var sorted = archive.slice().reverse();
-
     list.innerHTML = '';
-    sorted.forEach(function (entry) {
+    entries.forEach(function (entry) {
       list.appendChild(buildArchiveEntry(entry));
     });
   }
 
+  // ===========================================================
+  // Loaders
+  // ===========================================================
+  async function loadArchiveEntries() {
+    // --- v2: index + per-project files ---
+    try {
+      var idxRes = await fetch(PROJECTS_INDEX, { cache: 'no-cache' });
+      if (idxRes.ok) {
+        var index = await idxRes.json();
+        var refs = (Array.isArray(index.projects) ? index.projects : [])
+          .filter(function (p) {
+            return p && p.status === 'archived' && p.id !== index.current;
+          });
+
+        var files = await Promise.all(refs.map(function (ref) {
+          return fetch(PROJECT_DIR + encodeURIComponent(ref.id) + '.json', { cache: 'no-cache' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function () { return null; });
+        }));
+
+        var projects = files
+          .map(function (full, i) { return full || refs[i]; })
+          .filter(Boolean);
+
+        projects.sort(function (a, b) {
+          return sortKey(b).localeCompare(sortKey(a));
+        });
+
+        return projects;
+      }
+    } catch (_) {}
+
+    // --- legacy fallback: projectArchive[] ---
+    try {
+      var res = await fetch(LEGACY_DATA);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      var archive = Array.isArray(data.projectArchive) ? data.projectArchive : [];
+      return archive.slice().reverse();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function sortKey(p) {
+    return String(p.sortDate || p.archivedAt || p.createdAt || p.date || '');
+  }
+
+  // ===========================================================
+  // Rendering
+  // ===========================================================
   function buildArchiveEntry(entry) {
     var images   = Array.isArray(entry.images) ? entry.images : [];
     var firstImg = images[0] || null;
-    var imgSrc   = firstImg
-      ? (firstImg.imageMode === 'remote' ? firstImg.remoteImage : firstImg.localImage)
-      : '';
-    var imgAlt   = firstImg ? (firstImg.alt || entry.title || '') : '';
+    var imgSrc   = firstImg ? resolveImageSrc(firstImg, entry.id) : (entry.image || '');
+    var imgAlt   = firstImg ? (firstImg.alt || entry.title || '') : (entry.title || '');
 
     // Excerpt: first ~140 chars of body
     var body    = entry.body || '';
@@ -72,6 +122,20 @@
       + '</div>';
 
     return article;
+  }
+
+  function resolveImageSrc(img, projectId) {
+    if (!img) return '';
+    if (typeof img === 'string') img = { src: img };
+    if (img.imageMode === 'remote') return img.remoteImage || '';
+    if (img.localImage) {
+      return img.localImage.charAt(0) === '/' ? img.localImage : '/' + img.localImage;
+    }
+    var s = img.src || img.remote || img.remoteImage || '';
+    if (!s) return '';
+    if (/^https?:\/\//i.test(s) || s.charAt(0) === '/') return s;
+    if (!projectId) return '/' + s.replace(/^\/+/, '');
+    return PROJECT_IMG_BASE + projectId + '/' + s.replace(/^\/+/, '');
   }
 
   function formatDate(isoString) {

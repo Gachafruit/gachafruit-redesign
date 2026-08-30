@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Originals Admin — Gachafruit Studio</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta name="theme-color" content="#B85C38">
+  <link rel="stylesheet" href="originals-manager.css">
+</head>
+<body>
+
+  <div class="manager-wrap">
+
+    <header class="manager-header">
+      <div class="manager-logo">Gachafruit Studio</div>
+      <h1 class="manager-title">Originals Admin</h1>
+      <p class="manager-subtitle">
+        Two focused tools now handle what the old single Originals Manager did.
+      </p>
+    </header>
+
+    <div class="admin-landing">
+
+      <a class="admin-card" href="originals-project-manager.html">
+        <div class="admin-card__eyebrow">Publishing</div>
+        <div class="admin-card__title">Originals Project Manager</div>
+        <p class="admin-card__desc">
+          Create, edit, publish and archive project / journal entries.
+        </p>
+        <ul class="admin-card__list">
+          <li>One permanent file &amp; image folder per project</li>
+          <li>Current vs. archived is a state change, not a file move</li>
+          <li>Publish straight to the repo folder, or export a ZIP</li>
+        </ul>
+      </a>
+
+      <a class="admin-card" href="originals-listings-manager.html">
+        <div class="admin-card__eyebrow">Listings</div>
+        <div class="admin-card__title">Originals Listings Manager</div>
+        <p class="admin-card__desc">
+          Manage the marketplace-facing parts of the Originals page.
+        </p>
+        <ul class="admin-card__list">
+          <li>Etsy section display settings</li>
+          <li>Free Models tiles</li>
+          <li>Writes <code>/data/originals-content.json</code></li>
+        </ul>
+      </a>
+
+    </div>
+
+    <div class="manager-section">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">Data map</h2>
+      </div>
+      <ul class="admin-card__list" style="margin-left:1.1rem;">
+        <li><code>/data/originals/projects-index.json</code> — manifest: which project is current + every entry</li>
+        <li><code>/data/originals/projects/&lt;id&gt;.json</code> — one file per project entry</li>
+        <li><code>/assets/images/originals/projects/&lt;id&gt;/</code> — that project's permanent image folder</li>
+        <li><code>/data/originals-content.json</code> — Etsy settings + Free Models only</li>
+      </ul>
+    </div>
+
+  </div>
+
+</body>
+</html>

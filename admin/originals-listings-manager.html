@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Originals Listings Manager — Gachafruit Studio</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta name="theme-color" content="#B85C38">
+  <link rel="stylesheet" href="originals-manager.css">
+</head>
+<body>
+
+  <div class="manager-wrap">
+
+    <a class="pm-back-link" href="originals-admin.html">← Originals Admin</a>
+
+    <header class="manager-header">
+      <div class="manager-logo">Gachafruit Studio</div>
+      <h1 class="manager-title">Originals Listings Manager</h1>
+      <p class="manager-subtitle">
+        Etsy section settings and Free Models tiles for <strong>/originals/</strong>.
+        Writes <code>/data/originals-content.json</code>. Project entries are managed separately.
+      </p>
+    </header>
+
+    <!-- Repository connection (File System Access) -->
+    <div class="repo-bar" id="repoBar">
+      <div class="repo-bar__status">
+        <span class="repo-dot"></span>
+        <span id="repoStatusText">Repository folder not connected</span>
+        <span class="repo-bar__path" id="repoPath"></span>
+      </div>
+      <div class="repo-bar__actions">
+        <button class="btn btn-secondary btn-sm" id="repoConnectBtn">Choose Repository Folder</button>
+        <button class="btn btn-secondary btn-sm" id="repoReconnectBtn" style="display:none;">Reconnect</button>
+        <button class="btn btn-secondary btn-sm btn-danger-hover" id="repoDisconnectBtn" style="display:none;">Disconnect</button>
+      </div>
+      <p class="repo-bar__hint" id="repoHint">
+        Connect the local repository folder to publish directly, or use <strong>Export</strong> for a ZIP / JSON.
+      </p>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="importBtn" class="btn btn-secondary"><span class="btn-icon">↑</span> Import JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+        <button id="reloadBtn" class="btn btn-secondary"><span class="btn-icon">↻</span> Reload from repo</button>
+      </div>
+      <div class="toolbar-group">
+        <button id="publishBtn" class="btn btn-primary"><span class="btn-icon">✓</span> Save / Publish</button>
+      </div>
+    </div>
+
+    <div class="status-bar" id="statusBar" role="status" aria-live="polite"></div>
+
+    <!-- Etsy section -->
+    <div class="manager-section">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">Etsy Section</h2>
+        <p class="manager-section-sub">
+          Controls the <em>Shop Our Originals</em> preview row. Listings come from the shared Etsy API — no separate setup.
+        </p>
+      </div>
+      <div id="etsySettingsWrap"></div>
+    </div>
+
+    <!-- Free Models -->
+    <div class="manager-section">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">Free Models</h2>
+        <p class="manager-section-sub">
+          Manual tiles for the <em>Browse the Community Archive</em> section. Each links to an external download.
+        </p>
+      </div>
+      <div class="tiles-grid" id="freeModelsTilesGrid"></div>
+      <button class="add-tile-btn" id="addFreeModelBtn" type="button">+ Add Free Model Tile</button>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="originals-repo-fs.js"></script>
+  <script src="originals-listings-manager.js"></script>
+</body>
+</html>

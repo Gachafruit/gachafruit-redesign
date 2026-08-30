@@ -1,23 +1,6 @@
 {
+  "_note": "Listings-only file for the Originals page (Etsy section + Free Models). Project/journal entries now live in /data/originals/. Managed by admin/originals-listings-manager.html.",
   "updatedAt": "2026-04-17T09:33:08.314Z",
-  "currentProject": {
-    "id": "project-001",
-    "title": "Our first project entry!",
-    "subtitle": "in progress",
-    "date": "4/17/2026",
-    "body": "This is an entry about the creation of our project entry system. An entry about an entry.",
-    "images": [
-      {
-        "id": "img-1",
-        "imageMode": "local",
-        "localImage": "/assets/images/originals/projects/project-001/img-1.png",
-        "remoteImage": "",
-        "alt": ""
-      }
-    ],
-    "enabled": true
-  },
-  "projectArchive": [],
   "etsySettings": {
     "eyebrow": "GACHAFRUIT ON ETSY",
     "sectionTitle": "Shop Our Originals",

@@ -3,15 +3,21 @@
    Depends on: js/components/card-builder.js (GachafruitCards)
 
    Data sources:
-     /data/originals-content.json  — current project, etsy settings, free models
-     /data/featured-creations.json — etsy API URL (shared with explore-all)
+     /data/originals/projects-index.json  — which project is current (v2)
+     /data/originals/projects/<id>.json   — the current project entry (v2)
+     /data/originals-content.json         — etsy settings + free models
+                                            (also legacy currentProject fallback)
+     /data/featured-creations.json        — etsy API URL (shared with explore-all)
    ============================================================ */
 
 (function () {
   'use strict';
 
-  var ORIGINALS_DATA = '/data/originals-content.json';
-  var FEATURED_DATA  = '/data/featured-creations.json';
+  var ORIGINALS_DATA   = '/data/originals-content.json';
+  var FEATURED_DATA    = '/data/featured-creations.json';
+  var PROJECTS_INDEX   = '/data/originals/projects-index.json';
+  var PROJECT_DIR      = '/data/originals/projects/';
+  var PROJECT_IMG_BASE = '/assets/images/originals/projects/';
 
   // ===========================================================
   // Init
@@ -29,11 +35,48 @@
       if (results[1].ok) featuredData  = await results[1].json();
     } catch (_) {}
 
+    // Project entry: prefer the v2 per-project structure, fall back to the
+    // legacy currentProject block embedded in originals-content.json.
+    var currentProject = await loadCurrentProject(originalsData);
+    renderCurrentProject(currentProject);
+
     if (!originalsData) return;
 
-    renderCurrentProject(originalsData.currentProject || {});
     await renderEtsyPreview(originalsData.etsySettings || {}, featuredData);
     renderFreeModels(originalsData.freeModels || []);
+  }
+
+  // ===========================================================
+  // Project entry loader (v2 index + per-project file, legacy fallback)
+  // ===========================================================
+  async function loadCurrentProject(originalsData) {
+    try {
+      var idxRes = await fetch(PROJECTS_INDEX, { cache: 'no-cache' });
+      if (idxRes.ok) {
+        var index = await idxRes.json();
+        if (index && index.current) {
+          var pRes = await fetch(
+            PROJECT_DIR + encodeURIComponent(index.current) + '.json',
+            { cache: 'no-cache' }
+          );
+          if (pRes.ok) {
+            var proj = await pRes.json();
+            // The index is authoritative for "which project is current",
+            // so a stale status field in the file must not hide it.
+            proj.__fromIndexCurrent = true;
+            return proj;
+          }
+        }
+        // Index is authoritative and says nothing is current.
+        return null;
+      }
+    } catch (_) {}
+
+    // Legacy fallback — originals-content.json used to carry currentProject
+    if (originalsData && originalsData.currentProject) {
+      return originalsData.currentProject;
+    }
+    return null;
   }
 
   // ===========================================================
@@ -43,7 +86,14 @@
     var container = document.getElementById('current-project');
     if (!container) return;
 
-    if (!project || !project.enabled || !project.title) {
+    // v2 project files use `status`; legacy blocks use `enabled`.
+    // When the entry came from index.current, the index already decided.
+    var isVisible = project && (
+      project.__fromIndexCurrent === true
+      || (project.status ? project.status === 'current' : project.enabled === true)
+    );
+
+    if (!project || !isVisible || !project.title) {
       container.innerHTML =
         '<div class="project-placeholder">'
         + '<p>No current project — check back soon.</p>'
@@ -55,7 +105,7 @@
     }
 
     var images     = Array.isArray(project.images) ? project.images : [];
-    var galleryHtml = buildGalleryHtml(images);
+    var galleryHtml = buildGalleryHtml(images, project.id);
     var bodyHtml    = formatBody(project.body || '');
 
     var subtitleHtml = project.subtitle
@@ -85,8 +135,8 @@
   //   1        → solo wide image
   //   2        → pair (side by side)
   //   3–5      → editorial (1 large left + up to 4 in grid right)
-  function buildGalleryHtml(images) {
-    var valid = (images || []).filter(function (img) { return resolveImageSrc(img); });
+  function buildGalleryHtml(images, projectId) {
+    var valid = (images || []).filter(function (img) { return resolveImageSrc(img, projectId); });
 
     if (valid.length === 0) {
       return '<div class="gallery-solo"><div class="gallery-placeholder" role="img" aria-label="Project image"></div></div>';
@@ -94,14 +144,14 @@
 
     if (valid.length === 1) {
       return '<div class="gallery-solo">'
-        + '<img class="gallery-img" src="' + esc(resolveImageSrc(valid[0])) + '" alt="' + esc(valid[0].alt || '') + '" loading="lazy">'
+        + '<img class="gallery-img" src="' + esc(resolveImageSrc(valid[0], projectId)) + '" alt="' + esc(valid[0].alt || '') + '" loading="lazy">'
         + '</div>';
     }
 
     if (valid.length === 2) {
       return '<div class="gallery-pair">'
         + valid.map(function (img) {
-            return '<img class="gallery-img" src="' + esc(resolveImageSrc(img)) + '" alt="' + esc(img.alt || '') + '" loading="lazy">';
+            return '<img class="gallery-img" src="' + esc(resolveImageSrc(img, projectId)) + '" alt="' + esc(img.alt || '') + '" loading="lazy">';
           }).join('')
         + '</div>';
     }
@@ -110,10 +160,10 @@
     var primary   = valid[0];
     var secondary = valid.slice(1, 5); // up to 4 secondary images
 
-    var primaryHtml = '<img class="gallery-img" src="' + esc(resolveImageSrc(primary)) + '" alt="' + esc(primary.alt || '') + '" loading="lazy">';
+    var primaryHtml = '<img class="gallery-img" src="' + esc(resolveImageSrc(primary, projectId)) + '" alt="' + esc(primary.alt || '') + '" loading="lazy">';
 
     var secondaryHtml = secondary.map(function (img) {
-      return '<img class="gallery-img" src="' + esc(resolveImageSrc(img)) + '" alt="' + esc(img.alt || '') + '" loading="lazy">';
+      return '<img class="gallery-img" src="' + esc(resolveImageSrc(img, projectId)) + '" alt="' + esc(img.alt || '') + '" loading="lazy">';
     }).join('');
 
     // Use single-column secondary for 1–2 secondary images so they stack tall
@@ -299,14 +349,26 @@
   // ===========================================================
   // Helpers
   // ===========================================================
-  function resolveImageSrc(img) {
+  // Resolve a project image entry to a usable src.
+  //   v2 shape:      { src: "01.jpg", alt }               → /assets/images/originals/projects/<id>/01.jpg
+  //   v2 absolute:   { src: "/assets/…" | "https://…" }   → used verbatim
+  //   legacy shape:  { imageMode, localImage, remoteImage }
+  function resolveImageSrc(img, projectId) {
     if (!img) return '';
+    if (typeof img === 'string') img = { src: img };
+
+    // Legacy shape
     if (img.imageMode === 'remote') return img.remoteImage || '';
-    var local = img.localImage || '';
-    // Ensure local paths are root-relative so they resolve correctly
-    // regardless of what subdirectory the page is served from.
-    if (local && local.charAt(0) !== '/') local = '/' + local;
-    return local;
+    if (img.localImage) {
+      var local = img.localImage;
+      return local.charAt(0) === '/' ? local : '/' + local;
+    }
+
+    var s = img.src || img.remote || img.remoteImage || '';
+    if (!s) return '';
+    if (/^https?:\/\//i.test(s) || s.charAt(0) === '/') return s;
+    if (!projectId) return '/' + s.replace(/^\/+/, '');
+    return PROJECT_IMG_BASE + projectId + '/' + s.replace(/^\/+/, '');
   }
 
   function esc(str) {

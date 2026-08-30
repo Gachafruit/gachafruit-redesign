@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Originals Project Manager — Gachafruit Studio</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta name="theme-color" content="#B85C38">
+  <link rel="stylesheet" href="originals-manager.css">
+</head>
+<body>
+
+  <div class="manager-wrap">
+
+    <a class="pm-back-link" href="originals-admin.html">← Originals Admin</a>
+
+    <header class="manager-header">
+      <div class="manager-logo">Gachafruit Studio</div>
+      <h1 class="manager-title">Originals Project Manager</h1>
+      <p class="manager-subtitle">
+        Create a project → add images → save / publish → later archive it.
+        Each project is one permanent file with its own permanent image folder.
+      </p>
+    </header>
+
+    <!-- ======================================================
+         Repository connection (File System Access)
+         ====================================================== -->
+    <div class="repo-bar" id="repoBar">
+      <div class="repo-bar__status">
+        <span class="repo-dot"></span>
+        <span id="repoStatusText">Repository folder not connected</span>
+        <span class="repo-bar__path" id="repoPath"></span>
+      </div>
+      <div class="repo-bar__actions">
+        <button class="btn btn-secondary btn-sm" id="repoConnectBtn">Choose Repository Folder</button>
+        <button class="btn btn-secondary btn-sm" id="repoReconnectBtn" style="display:none;">Reconnect</button>
+        <button class="btn btn-secondary btn-sm btn-danger-hover" id="repoDisconnectBtn" style="display:none;">Disconnect</button>
+      </div>
+      <p class="repo-bar__hint" id="repoHint">
+        Connect the local Gachafruit repository folder to publish files directly.
+        Without it, use <strong>Export Repository ZIP</strong> and extract at the repo root.
+      </p>
+    </div>
+
+    <div class="status-bar" id="statusBar" role="status" aria-live="polite"></div>
+
+    <!-- Migration / draft recovery (shown by JS when applicable) -->
+    <div id="migratePanelWrap"></div>
+
+    <!-- ======================================================
+         Toolbar
+         ====================================================== -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="newProjectBtn" class="btn btn-secondary">
+          <span class="btn-icon">+</span> New Project
+        </button>
+        <button id="importLegacyBtn" class="btn btn-secondary">
+          <span class="btn-icon">↑</span> Import legacy originals-content.json
+        </button>
+        <input type="file" id="importLegacyFile" accept=".json" style="display:none">
+        <button id="reloadRepoBtn" class="btn btn-secondary" style="display:none;">
+          <span class="btn-icon">↻</span> Reload from repository
+        </button>
+      </div>
+      <div class="toolbar-group">
+        <button id="exportZipBtn" class="btn btn-primary">
+          <span class="btn-icon">↓</span> Export Repository ZIP
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         Two-column: project list + editor
+         ====================================================== -->
+    <div class="pm-layout">
+
+      <aside class="pm-sidebar">
+        <div class="pm-sidebar__header">
+          <span>Projects</span>
+          <span id="pmProjectCount"></span>
+        </div>
+        <div class="pm-project-list" id="pmProjectList">
+          <!-- injected -->
+        </div>
+        <button class="pm-new-btn" id="pmSidebarNewBtn">+ New project</button>
+      </aside>
+
+      <div class="project-editor" id="projectEditor">
+        <!-- injected by originals-project-manager.js -->
+      </div>
+
+    </div>
+
+  </div><!-- /manager-wrap -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="originals-repo-fs.js"></script>
+  <script src="originals-project-manager.js"></script>
+</body>
+</html>
