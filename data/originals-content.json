@@ -1,6 +1,6 @@
 {
-  "_note": "Listings-only file for the Originals page (Etsy section + Free Models). Project/journal entries now live in /data/originals/. Managed by admin/originals-listings-manager.html.",
-  "updatedAt": "2026-04-17T09:33:08.314Z",
+  "_note": "Listings-only file for the Originals page (Etsy section + Free Models). Project entries live in /data/originals/.",
+  "updatedAt": "2026-08-31T04:36:10.668Z",
   "etsySettings": {
     "eyebrow": "GACHAFRUIT ON ETSY",
     "sectionTitle": "Shop Our Originals",
@@ -18,6 +18,17 @@
       "imageMode": "remote",
       "localImage": "assets/images/originals/free-models/FM1.jpg",
       "remoteImage": "https://makerworld.bblmw.com/makerworld/model/US2e4e3584f42eb3/design/2026-01-04_bf9659f5433128.png"
+    },
+    {
+      "id": "FM2",
+      "enabled": true,
+      "title": "Zebra LP2844 Vertical Rear-Feed Label Roll Stand",
+      "alt": "Picture of a thermal label printer sitting atop a purpose-made tabletop platform with a spool for mounting the thermal label roll outside of and under the machine.",
+      "url": "https://makerworld.com/en/models/3072222-zebra-lp2844-vertical-rear-feed-label-roll-stand#profileId-3458696",
+      "buttonText": "Download",
+      "imageMode": "remote",
+      "localImage": "assets/images/originals/free-models/FM2.jpg",
+      "remoteImage": "https://makerworld.bblmw.com/makerworld/model/US21805879819eb5/design/a9fa4c4c6f2a605d.jpg?x-oss-process=image/resize,w_1000/format,webp"
     }
   ]
 }
