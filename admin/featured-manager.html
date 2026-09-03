@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Featured Creations — Content Admin — Gachafruit Studio</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta name="theme-color" content="#B85C38">
+  <link rel="stylesheet" href="originals-manager.css">
+  <link rel="stylesheet" href="content-admin.css">
+</head>
+<body>
+
+  <div class="manager-wrap">
+
+    <a class="pm-back-link" href="content-admin.html">← Content Admin</a>
+
+    <header class="manager-header">
+      <div class="manager-logo">Gachafruit Studio</div>
+      <h1 class="manager-title">Featured Creations</h1>
+      <p class="manager-subtitle">
+        The 4 hand-picked tiles shown prominently on the homepage.
+        Writes the <code>featuredCreations</code> section of <code>/data/featured-creations.json</code>.
+      </p>
+    </header>
+
+    <!-- Repository connection (shared with every Gachafruit admin tool) -->
+    <div class="repo-bar" id="repoBar">
+      <div class="repo-bar__status">
+        <span class="repo-dot"></span>
+        <span id="repoStatusText">Repository folder not connected</span>
+        <span class="repo-bar__path" id="repoPath"></span>
+      </div>
+      <div class="repo-bar__actions">
+        <button class="btn btn-secondary btn-sm" id="repoConnectBtn">Choose Repository Folder</button>
+        <button class="btn btn-secondary btn-sm" id="repoReconnectBtn" style="display:none;">Reconnect</button>
+        <button class="btn btn-secondary btn-sm btn-danger-hover" id="repoDisconnectBtn" style="display:none;">Disconnect</button>
+      </div>
+      <p class="repo-bar__hint" id="repoHint"></p>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="reloadBtn" class="btn btn-secondary"><span class="btn-icon">↻</span> Reload from repository</button>
+        <button id="importBtn" class="btn btn-secondary"><span class="btn-icon">↑</span> Import JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+      </div>
+      <div class="toolbar-group">
+        <button id="saveBtn" class="btn btn-primary"><span class="btn-icon">✓</span> Save to Repository</button>
+      </div>
+    </div>
+
+    <div class="status-bar" id="statusBar" role="status" aria-live="polite"></div>
+    <div id="conflictWrap"></div>
+    <div class="manager-state" id="managerState"></div>
+
+    <div class="tiles-grid" id="featuredGrid"></div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="originals-repo-fs.js"></script>
+  <script src="admin-common.js"></script>
+  <script src="admin-tiles.js"></script>
+  <script src="featured-manager.js"></script>
+</body>
+</html>

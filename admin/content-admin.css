@@ -1,0 +1,78 @@
+/* ============================================================
+   content-admin.css — Featured Creations / Explore All / Heritage
+   admin tools.
+
+   The shared admin design system lives in admin/originals-manager.css
+   (loaded first). This file only adds the few rules that file does
+   not already provide, plus small Content-Admin-specific tweaks.
+   ============================================================ */
+
+/* ---- Editor state strip (reuses .pm-identity / .state-badge) ---- */
+.manager-state {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.25rem;
+}
+.manager-state .pm-identity__id {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ---- Draft-vs-repository conflict banner ---- */
+.conflict-banner {
+  padding: 0.85rem 1.1rem;
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.25rem;
+}
+.conflict-banner__text {
+  font-size: 0.82rem;
+  color: var(--info-text);
+  line-height: 1.5;
+  margin-bottom: 0.55rem;
+}
+.conflict-banner__actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* ---- "Test ↗" link on the URL field (not in the shared sheet) ---- */
+.test-url-link {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.test-url-link:hover { text-decoration: underline; }
+.test-url-link.hidden { display: none; }
+
+/* ---- Explore All settings extras ---- */
+.settings-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.api-mode-note {
+  font-size: 0.72rem;
+  color: var(--info-text);
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.6rem;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+/* ---- Heritage preview is landscape (4:3) not square ---- */
+.tile-card--heritage .preview-img-wrap { aspect-ratio: 4 / 3; }
+
+/* ---- Landing: allow the 4th (Originals) card to sit full-width-ish ---- */
+@media (min-width: 721px) {
+  .admin-landing { grid-template-columns: repeat(2, 1fr); }
+}

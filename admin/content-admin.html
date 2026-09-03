@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Admin — Gachafruit Studio</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta name="theme-color" content="#B85C38">
+  <link rel="stylesheet" href="originals-manager.css">
+  <link rel="stylesheet" href="content-admin.css">
+</head>
+<body>
+
+  <div class="manager-wrap">
+
+    <header class="manager-header">
+      <div class="manager-logo">Gachafruit Studio</div>
+      <h1 class="manager-title">Content Admin</h1>
+      <p class="manager-subtitle">
+        The old combined Featured Creations Manager is now three focused, repository-aware tools.
+      </p>
+    </header>
+
+    <div class="admin-landing">
+
+      <a class="admin-card" href="featured-manager.html">
+        <div class="admin-card__eyebrow">Homepage</div>
+        <div class="admin-card__title">Featured Creations</div>
+        <p class="admin-card__desc">
+          The 4 hand-picked tiles shown prominently on the homepage.
+        </p>
+        <ul class="admin-card__list">
+          <li>Enabled state, title, price, alt, URL</li>
+          <li>Local upload or remote image</li>
+          <li>Live preview</li>
+        </ul>
+      </a>
+
+      <a class="admin-card" href="explore-manager.html">
+        <div class="admin-card__eyebrow">Homepage + Explore page</div>
+        <div class="admin-card__title">Explore All</div>
+        <p class="admin-card__desc">
+          The Explore All grid — manual tiles or the Etsy Worker API with a manual fallback.
+        </p>
+        <ul class="admin-card__list">
+          <li>Manual / API + Fallback source modes</li>
+          <li>API URL, homepage-visible count, View All URL</li>
+          <li>Slot management &amp; ordering</li>
+        </ul>
+      </a>
+
+      <a class="admin-card" href="heritage-manager.html">
+        <div class="admin-card__eyebrow">Heritage page</div>
+        <div class="admin-card__title">Heritage Gallery</div>
+        <p class="admin-card__desc">
+          The 10-slot slideshow on the Heritage page.
+        </p>
+        <ul class="admin-card__list">
+          <li>Image + alt text per slide</li>
+          <li>Enabled / disabled</li>
+          <li>Existing slideshow behaviour unchanged</li>
+        </ul>
+      </a>
+
+      <a class="admin-card" href="originals-admin.html">
+        <div class="admin-card__eyebrow">Separate area</div>
+        <div class="admin-card__title">Originals Admin →</div>
+        <p class="admin-card__desc">
+          Project / journal entries and the Originals listings live in their own admin area.
+        </p>
+      </a>
+
+    </div>
+
+    <div class="manager-section">
+      <div class="manager-section-header">
+        <h2 class="manager-section-title">How it works</h2>
+      </div>
+      <ul class="admin-card__list" style="margin-left:1.1rem;">
+        <li>All three tools read and write the single file <code>/data/featured-creations.json</code>.</li>
+        <li>Each tool only ever rewrites <strong>its own section</strong> — the other two are preserved untouched.</li>
+        <li>Connect the repository folder once (any tool) and every tool shares that connection: it loads the current data automatically and writes changes straight back.</li>
+        <li>No repo connection? The tool still loads the live data from the served site and exports a repository-ready ZIP.</li>
+        <li>Image directories are unchanged: <code>assets/images/featured-creations/</code>, <code>assets/images/explore-all/</code>, <code>assets/images/heritage/gallery/</code>.</li>
+      </ul>
+    </div>
+
+  </div>
+
+</body>
+</html>

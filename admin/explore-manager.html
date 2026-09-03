@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore All — Content Admin — Gachafruit Studio</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta name="theme-color" content="#B85C38">
+  <link rel="stylesheet" href="originals-manager.css">
+  <link rel="stylesheet" href="content-admin.css">
+</head>
+<body>
+
+  <div class="manager-wrap">
+
+    <a class="pm-back-link" href="content-admin.html">← Content Admin</a>
+
+    <header class="manager-header">
+      <div class="manager-logo">Gachafruit Studio</div>
+      <h1 class="manager-title">Explore All</h1>
+      <p class="manager-subtitle">
+        The Explore All grid — manual tiles or the Etsy Worker API with a manual fallback.
+        Writes the <code>exploreAll</code> section of <code>/data/featured-creations.json</code>.
+      </p>
+    </header>
+
+    <div class="repo-bar" id="repoBar">
+      <div class="repo-bar__status">
+        <span class="repo-dot"></span>
+        <span id="repoStatusText">Repository folder not connected</span>
+        <span class="repo-bar__path" id="repoPath"></span>
+      </div>
+      <div class="repo-bar__actions">
+        <button class="btn btn-secondary btn-sm" id="repoConnectBtn">Choose Repository Folder</button>
+        <button class="btn btn-secondary btn-sm" id="repoReconnectBtn" style="display:none;">Reconnect</button>
+        <button class="btn btn-secondary btn-sm btn-danger-hover" id="repoDisconnectBtn" style="display:none;">Disconnect</button>
+      </div>
+      <p class="repo-bar__hint" id="repoHint"></p>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="reloadBtn" class="btn btn-secondary"><span class="btn-icon">↻</span> Reload from repository</button>
+        <button id="importBtn" class="btn btn-secondary"><span class="btn-icon">↑</span> Import JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+      </div>
+      <div class="toolbar-group">
+        <button id="saveBtn" class="btn btn-primary"><span class="btn-icon">✓</span> Save to Repository</button>
+      </div>
+    </div>
+
+    <div class="status-bar" id="statusBar" role="status" aria-live="polite"></div>
+    <div id="conflictWrap"></div>
+    <div class="manager-state" id="managerState"></div>
+
+    <!-- Settings -->
+    <div class="settings-panel">
+      <div class="settings-group">
+        <div class="settings-label">Content Source</div>
+        <div class="mode-tabs">
+          <button class="source-mode-tab mode-tab active" data-mode="manual">Manual</button>
+          <button class="source-mode-tab mode-tab" data-mode="api-with-fallback">API + Fallback</button>
+        </div>
+      </div>
+
+      <div class="settings-group settings-group-wide hidden" id="apiModeSettings">
+        <div class="settings-label">Etsy Worker API URL</div>
+        <input type="url" id="apiUrl" class="settings-input" placeholder="https://your-worker.workers.dev/">
+        <p class="api-mode-note">Manual tiles below serve as the fallback whenever the API is unavailable or returns nothing.</p>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-label">Homepage tiles visible</div>
+        <input type="number" id="homepageVisibleCount" class="settings-input" value="8" min="1" max="50">
+      </div>
+
+      <div class="settings-group settings-group-wide">
+        <div class="settings-label">View All URL <span class="form-label-optional">optional</span></div>
+        <input type="url" id="viewAllUrl" class="settings-input" placeholder="https://gachafruit.com/explore-all/">
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-label">Total manual slots</div>
+        <div class="settings-inline">
+          <input type="number" id="slotCount" class="settings-input" value="12" min="1" max="100">
+          <button id="applySlotCount" class="btn btn-secondary btn-sm">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tiles-grid" id="exploreGrid"></div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="originals-repo-fs.js"></script>
+  <script src="admin-common.js"></script>
+  <script src="admin-tiles.js"></script>
+  <script src="explore-manager.js"></script>
+</body>
+</html>

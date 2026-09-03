@@ -3,130 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homepage Content Manager — Gachafruit Studio</title>
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <meta name="theme-color" content="#B85C38" />
-  <link rel="stylesheet" href="featured-creations-manager.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <title>Homepage Content Manager (moved) — Gachafruit Studio</title>
+  <meta http-equiv="refresh" content="0; url=content-admin.html">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <meta name="theme-color" content="#B85C38">
+  <link rel="stylesheet" href="originals-manager.css">
 </head>
 <body>
-
   <div class="manager-wrap">
-
     <header class="manager-header">
       <div class="manager-logo">Gachafruit Studio</div>
-      <h1 class="manager-title">Homepage Content Manager</h1>
-      <p class="manager-subtitle">Manage Featured Creations, Explore All, and Heritage Gallery. Export JSON when ready.</p>
+      <h1 class="manager-title">This manager has moved</h1>
+      <p class="manager-subtitle">
+        The combined Featured Creations Manager was split into three focused tools.
+        Redirecting to <a href="content-admin.html">Content Admin</a>…
+      </p>
     </header>
-
-    <!-- Shared toolbar — controls both sections -->
-    <div class="toolbar">
-      <div class="toolbar-group">
-        <button id="importBtn" class="btn btn-secondary">
-          <span class="btn-icon">↑</span> Import JSON
-        </button>
-        <input type="file" id="importFile" accept=".json" style="display:none">
-
-        <button id="resetBtn" class="btn btn-secondary">
-          <span class="btn-icon">↺</span> Reset to Imported
-        </button>
-
-        <button id="clearBtn" class="btn btn-secondary btn-danger-hover">
-          <span class="btn-icon">×</span> Clear Draft
-        </button>
-      </div>
-
-      <div class="toolbar-group">
-        <button id="exportBtn" class="btn btn-primary">
-          <span class="btn-icon">↓</span> Export JSON
-        </button>
-      </div>
+    <div class="admin-landing">
+      <a class="admin-card" href="featured-manager.html">
+        <div class="admin-card__eyebrow">Homepage</div>
+        <div class="admin-card__title">Featured Creations</div>
+        <p class="admin-card__desc">The 4 hand-picked homepage tiles.</p>
+      </a>
+      <a class="admin-card" href="explore-manager.html">
+        <div class="admin-card__eyebrow">Homepage + Explore page</div>
+        <div class="admin-card__title">Explore All</div>
+        <p class="admin-card__desc">Manual tiles or Etsy API + fallback.</p>
+      </a>
+      <a class="admin-card" href="heritage-manager.html">
+        <div class="admin-card__eyebrow">Heritage page</div>
+        <div class="admin-card__title">Heritage Gallery</div>
+        <p class="admin-card__desc">The 10-slot Heritage slideshow.</p>
+      </a>
     </div>
-
-    <div class="status-bar" id="statusBar" role="status" aria-live="polite"></div>
-
-    <!-- ======================================================
-         Section 1: Featured Creations
-         ====================================================== -->
-    <div class="manager-section">
-      <div class="manager-section-header">
-        <h2 class="manager-section-title">Featured Creations</h2>
-        <p class="manager-section-sub">4 tiles shown prominently on the homepage. Always manual.</p>
-      </div>
-      <div class="tiles-grid" id="tilesGrid">
-        <!-- Injected by JS -->
-      </div>
-    </div>
-
-    <!-- ======================================================
-         Section 2: Explore All
-         ====================================================== -->
-    <div class="manager-section" id="exploreSection">
-      <div class="manager-section-header">
-        <h2 class="manager-section-title">Explore All</h2>
-        <p class="manager-section-sub">Manage the Explore All grid. The first <span id="visibleCountDisplay">8</span> enabled tiles appear on the homepage in order.</p>
-      </div>
-
-      <!-- Settings panel -->
-      <div class="settings-panel">
-
-        <div class="settings-group">
-          <div class="settings-label">Content Source</div>
-          <div class="mode-tabs">
-            <button class="source-mode-tab mode-tab active" data-mode="manual">Manual</button>
-            <button class="source-mode-tab mode-tab"        data-mode="api-with-fallback">API + Fallback</button>
-          </div>
-          <div class="settings-group settings-group-wide hidden" id="apiModeSettings">
-            <div class="settings-label">Worker API URL</div>
-            <input type="url" id="apiUrl" class="settings-input" placeholder="https://your-worker.workers.dev/">
-            <p class="api-mode-note" id="apiModeNote">
-              Manual tiles serve as fallback when the API is unavailable.
-            </p>
-          </div>
-        </div>
-
-        <div class="settings-group">
-          <div class="settings-label">Homepage tiles visible</div>
-          <input type="number" id="homepageVisibleCount" class="settings-input" value="8" min="1" max="50">
-        </div>
-
-        <div class="settings-group settings-group-wide">
-          <div class="settings-label">View All URL <span class="form-label-optional">optional</span></div>
-          <input type="url" id="viewAllUrl" class="settings-input" placeholder="https://...">
-        </div>
-
-        <div class="settings-group">
-          <div class="settings-label">Total slots</div>
-          <div class="settings-inline">
-            <input type="number" id="slotCount" class="settings-input" value="12" min="1" max="100">
-            <button id="applySlotCount" class="btn btn-secondary btn-sm">Apply</button>
-          </div>
-        </div>
-
-      </div><!-- /settings-panel -->
-
-      <div class="tiles-grid" id="exploreTilesGrid">
-        <!-- Injected by JS -->
-      </div>
-    </div><!-- /exploreSection -->
-
-    <!-- ======================================================
-         Section 3: Heritage Gallery (Slideshow)
-         ====================================================== -->
-    <div class="manager-section" id="heritageSection">
-      <div class="manager-section-header">
-        <h2 class="manager-section-title">Heritage Gallery <span style="font-weight:400; color: var(--muted); font-size: 0.875rem;">(Slideshow)</span></h2>
-        <p class="manager-section-sub">10 image slots for the Heritage page slideshow. Only <strong>enabled</strong> slides appear. No titles or prices — images only.</p>
-      </div>
-      <div class="tiles-grid" id="heritageTilesGrid">
-        <!-- Injected by JS -->
-      </div>
-    </div><!-- /heritageSection -->
-
-  </div><!-- /manager-wrap -->
-
-  <script src="featured-creations-manager.js"></script>
+  </div>
 </body>
 </html>
