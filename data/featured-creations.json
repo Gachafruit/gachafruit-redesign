@@ -1,17 +1,17 @@
 {
-  "updatedAt": "2026-04-04T05:49:30.887Z",
+  "updatedAt": "2026-09-03T23:42:46.117Z",
   "featuredCreations": {
     "tiles": [
       {
         "id": "F1",
         "enabled": true,
-        "title": "Tupilaq Totem Planter",
-        "price": "$8 - $18",
-        "alt": "3D Printed Tupilaq Totem Planter - Gachafruit Original",
-        "url": "https://www.etsy.com/listing/4326308430/3d-printed-tupilaq-totem-planter-inuit",
+        "title": "Raspberry Pi 5 Case Rambutan Computer Case",
+        "price": "$54.99",
+        "alt": "A picture of Gachafruit's Mid-Century Modern-style Raspberry Pi 5 computer case",
+        "url": "https://www.etsy.com/listing/4567881281/raspberry-pi-5-case-rambutan-retro-mid",
         "imageMode": "remote",
         "localImage": "assets/images/featured-creations/F1.jpg",
-        "remoteImage": "https://i.etsystatic.com/60260227/r/il/348e7c/7018882117/il_1140xN.7018882117_7p9z.jpg"
+        "remoteImage": "https://i.etsystatic.com/60260227/r/il/6b5af3/8518267009/il_1140xN.8518267009_qqce.jpg"
       },
       {
         "id": "F2",
@@ -26,14 +26,14 @@
       },
       {
         "id": "F3",
-        "enabled": false,
-        "title": "",
-        "price": "",
-        "alt": "",
-        "url": "",
-        "imageMode": "local",
+        "enabled": true,
+        "title": "Tupilaq Totem Planter",
+        "price": "$8 - $18",
+        "alt": "3D Printed Tupilaq Totem Planter - Gachafruit Original",
+        "url": "https://www.etsy.com/listing/4326308430/3d-printed-tupilaq-totem-planter-inuit",
+        "imageMode": "remote",
         "localImage": "assets/images/featured-creations/F3.jpg",
-        "remoteImage": ""
+        "remoteImage": "https://i.etsystatic.com/60260227/r/il/348e7c/7018882117/il_1140xN.7018882117_7p9z.jpg"
       },
       {
         "id": "F4",
